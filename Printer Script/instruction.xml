@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>132420211345190688</DateTime>
+  <GameVersion>0.2.2502.11509</GameVersion>
+  <Title>Printer Script</Title>
+  <Description />
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>define MAX 6
+alias master d0
+alias slave1 d1
+alias slave2 d2
+alias slave3 d3
+alias slave4 d4
+alias slave5 d5
+alias x r7
+alias y r8
+alias hash r9
+alias devices r10
+loop:
+yield
+l x master On
+beqz x loop
+l x master Activate
+beqz x loop
+move r6 1
+move devices 1
+brdns dr6 2
+add devices devices 1
+add r6 r6 1
+brlt r6 MAX -3
+l x db Setting
+div y x devices
+floor y y
+mod x x devices
+l hash master RecipeHash
+move r6 0
+move rr6 0
+bdseal dr6 setup
+add r6 r6 1
+brlt r6 MAX -3
+yield
+move x 0
+move r6 0
+bdseal dr6 check
+add r6 r6 1
+brlt r6 MAX -2
+brnez x -6
+j loop
+setup:
+move rr6 y
+breqz x 3
+add rr6 rr6 1
+sub x x 1
+beqz rr6 ra
+s dr6 On 1
+s dr6 RecipeHash hash
+s dr6 ClearMemory 1
+s dr6 Activate 1
+j ra
+check:
+l y dr6 ExportCount
+brge y rr6 3
+move x 1
+j ra
+s dr6 On 0
+j ra</Instructions>
+</InstructionData>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>132419489462874285</DateTime>
+  <GameVersion>0.2.2502.11509</GameVersion>
+  <Title>Printer Primary Secondary 2</Title>
+  <Description />
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias master d0
+alias slave1 d1
+alias slave2 d2
+alias slave3 d3
+alias slave4 d4
+alias dial d5
+alias x r6
+alias y r7
+alias hash r8
+alias devices r9
+loop:
+yield
+l x master On
+beqz x loop
+l x master Activate
+beqz x loop
+move r5 1
+move devices 1
+brdns dr5 2
+add devices devices 1
+add r5 r5 1
+brlt r5 5 -3
+l x dial Setting
+div y x devices
+floor y y
+mod x x devices
+l hash master RecipeHash
+move r5 0
+move rr5 0
+bdseal dr5 setup
+add r5 r5 1
+brlt r5 5 -3
+yield
+move x 0
+move r5 0
+bdseal dr5 check
+add r5 r5 1
+brlt r5 5 -2
+brnez x -6
+j loop
+setup:
+move rr5 y
+breqz x 3
+add rr5 rr5 1
+sub x x 1
+beqz rr5 ra
+s dr5 On 1
+s dr5 RecipeHash hash
+s dr5 ClearMemory 1
+s dr5 Activate 1
+j ra
+check:
+l y dr5 ExportCount
+brge y rr5 3
+move x 1
+j ra
+s dr5 On 0
+j ra</Instructions>
+</InstructionData>

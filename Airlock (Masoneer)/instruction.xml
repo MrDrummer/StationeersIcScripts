@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134022498826424902</DateTime>
+  <GameVersion>0.2.5898.25997</GameVersion>
+  <Title>Airlock (Masoneer)</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>#Dual Airlock Triple Vent Mirror and Occupancy IC Code - Airlock A
+#Yellow+White Power Network with Inside Lobby Devices
+#Masoneer
+
+define LargePoweredVent -785498334
+define ProxSensor 568800213
+define LongWideWallLight 555215790
+define LightRound 1514476632
+define LongAngledWallLight 1847265835
+define Console 235638270
+define ConsoleMonitor 801677497
+
+start:
+yield
+
+lbn r0 ProxSensor HASH("Airlock Proximity Sensor") Activate Sum
+lbn r1 ProxSensor HASH("Lobby Proximity Sensor") Activate Sum
+
+lbn r2 LargePoweredVent HASH("InternalAV1") Mode Sum
+lbn r3 LargePoweredVent HASH("InternalAV1") On Sum
+lbn r4 LargePoweredVent HASH("ExternalAV1") Mode Sum
+lbn r5 LargePoweredVent HASH("ExternalAV1") On Sum
+
+sbn LargePoweredVent HASH("InternalAV2") Mode r2
+sbn LargePoweredVent HASH("InternalAV2") On r3
+sbn LargePoweredVent HASH("ExternalAV2") Mode r4
+sbn LargePoweredVent HASH("ExternalAV2") On r5
+sbn LargePoweredVent HASH("InternalAV3") Mode r2
+sbn LargePoweredVent HASH("InternalAV3") On r3
+sbn LargePoweredVent HASH("ExternalAV3") Mode r4
+sbn LargePoweredVent HASH("ExternalAV3") On r5
+bne r0 r6 CheckAirlockOccupancy
+bne r1 r7 CheckLobbyOccupancy
+j start
+
+CheckAirlockOccupancy:
+beq r0 1 AirlockOccupancyActive
+beq r0 0 AirlockOccupancyInactive
+j start
+
+CheckLobbyOccupancy:
+beq r1 1 LobbyOccupancyActive
+beq r1 0 LobbyOccupancyInactive
+j start
+
+AirlockOccupancyActive:
+sbn Console HASH("Airlock Console - Internal Base Side") On 1
+sbn Console HASH("Airlock Console - Internal Mars Side") On 1
+sbn ConsoleMonitor HASH("Airlock Console - Internal") On 1
+sbn ConsoleMonitor HASH("Airlock Console - External") On 1
+sb LongWideWallLight On 1
+sb LightRound On 1
+move r6 r0
+j start
+
+AirlockOccupancyInactive:
+sbn Console HASH("Airlock Console - Internal Base Side") On 0
+sbn Console HASH("Airlock Console - Internal Mars Side") On 0
+sbn ConsoleMonitor HASH("Airlock Console - Internal") On 0
+sbn ConsoleMonitor HASH("Airlock Console - External") On 0
+sb LongWideWallLight On 0
+sb LightRound On 0
+move r6 r0
+j start
+
+LobbyOccupancyActive:
+sbn ConsoleMonitor HASH("Airlock Tank Pressure Monitor") On 1
+sbn ConsoleMonitor HASH("Airlock Tank Temperature Monitor") On 1
+sbn ConsoleMonitor HASH("Propellant Fill Station Monitor") On 1
+sbn ConsoleMonitor HASH("Oxygen Fill Station Monitor") On 1
+sbn ConsoleMonitor HASH("Canister Evacuation Station Monitor") On 1
+sb LongAngledWallLight On 1
+move r7 r1
+j start
+
+LobbyOccupancyInactive:
+sbn ConsoleMonitor HASH("Airlock Tank Pressure Monitor") On 0
+sbn ConsoleMonitor HASH("Airlock Tank Temperature Monitor") On 0
+sbn ConsoleMonitor HASH("Propellant Fill Station Monitor") On 0
+sbn ConsoleMonitor HASH("Oxygen Fill Station Monitor") On 0
+sbn ConsoleMonitor HASH("Canister Evacuation Station Monitor") On 0
+sb LongAngledWallLight On 0
+move r7 r1
+j start
+
+j start</Instructions>
+</InstructionData>

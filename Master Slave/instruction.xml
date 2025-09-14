@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>132419285334002755</DateTime>
+  <GameVersion>0.2.2502.11509</GameVersion>
+  <Title>Master Slave</Title>
+  <Description />
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias dMasterMachine d0
+define noSlaves 4
+start:
+yield
+l r0 dMasterMachine RecipeHash
+move r15 1
+loop:
+s dr15 RecipeHash r0
+beq r15 noSlaves start
+add r15 r15 1
+j loop</Instructions>
+</InstructionData>
