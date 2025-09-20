@@ -23,6 +23,7 @@ Start:
   clr db # clear stack
   move sp 0 # stack pointer to 0
   move IngotDbIndex 0
+  j Loop
 
 MainLoop:
   yield
@@ -34,14 +35,14 @@ MainLoop:
   beqz r0 MainLoop
 
 Loop:
-  bgt IngotDbIndex IngotCount MainLoop
+  bgt IngotDbIndex r0 EndLoop
   get IngotHash IngotDb IngotDbIndex
   add IngotDbIndex IngotDbIndex 1
   get IngotExpectedQty IngotDb IngotDbIndex
   add IngotDbIndex IngotDbIndex 1
   sub IngotRemainder IngotExpectedQty IngotActualQty
 
-
+  
 # Less than or equal to 0 - means we have enough of this ingot
 blez IngotRemainder MainLoop
   # Push the ingot hash and the remainder quantity onto the stack
@@ -50,9 +51,10 @@ blez IngotRemainder MainLoop
   push IngotRemainder
   lr IngotActualQty Printer Contents IngotHash
   s Display Setting IngotActualQty
-j Loop
+j MainLoop
 
 ShowItem:
+s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
   sub r0 DialSetting 1 # Convert to 0 based index
   mul r0 r0 2 # Stack pointer index (2 values per item)
   get r1 db r0
