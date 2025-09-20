@@ -35,7 +35,7 @@ MainLoop:
   beqz r0 MainLoop
 
 Loop:
-  bgt IngotDbIndex r0 EndLoop
+  bgt IngotDbIndex r0 MainLoop
   get IngotHash IngotDb IngotDbIndex
   add IngotDbIndex IngotDbIndex 1
   get IngotExpectedQty IngotDb IngotDbIndex
@@ -54,7 +54,7 @@ blez IngotRemainder MainLoop
 j MainLoop
 
 ShowItem:
-s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
   sub r0 DialSetting 1 # Convert to 0 based index
   mul r0 r0 2 # Stack pointer index (2 values per item)
   get r1 db r0
