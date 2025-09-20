@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <DateTime>134022476395139897</DateTime>
-  <GameVersion>0.2.5898.25997</GameVersion>
-  <Title>Suit V5</Title>
-  <Description>​</Description>
+  <DateTime>134026944651613895</DateTime>
+  <GameVersion>0.2.5910.26026</GameVersion>
+  <Title>Suit</Title>
+  <Description>Magic suit code​</Description>
   <Author>MrDrummer25</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>#Suit Visor Safety, Homing, and Storm Alert Duke E.2025 09 09
@@ -18,10 +18,10 @@ define MinSafeTemp 273 #Kelvin =0c
 define MaxO2Ratio 0.9 #Filter data
 define MinO2Ratio 0.6
 define MaxPoisonRatio 0.005 #Flush data = 0.5%
-define SecsPerWarnTime 60 #one Minute
-define NumWarnings 5
+define SecsPerWarnTime 300 #one Minute
+define NumWarnings 1
 define SoundIndexBase 29
-define NumFlashesx2 6
+define NumFlashesx2 0
 define HeadingTempSetting 293 #19c
 define RoomTemperature 294
 define PressureTempSetting 297 #23c
@@ -101,7 +101,7 @@ sleep 2
 s Suit SoundAlert Sound.StormIncoming
 sleep 2
 add r0 WarnCount SoundIndexBase
-s Suit SoundAlert r0
+s Suit SoundAlert 5
 l LightWasOn Helmet On
 move FlashCount NumFlashesx2
 j ra
@@ -128,5 +128,6 @@ beq r4 r3 ra #if already det we're done
 s Suit AirRelease r2
 s Suit Filtration r2
 s Suit PressureSetting r4
-j ra</Instructions>
+j ra
+</Instructions>
 </InstructionData>
