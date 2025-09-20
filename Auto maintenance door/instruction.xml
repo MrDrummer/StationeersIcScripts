@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134026940497743883</DateTime>
+  <GameVersion>0.2.5910.26026</GameVersion>
+  <Title>Auto maintenance door</Title>
+  <Description>Automagically opens the maintenance door in Crew Quarters​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions># Service Door Control IC Code
+# Masoneer
+define ProxSensor 568800213
+define WallLightLong 797794350
+define CompositeDoor -793837322
+define OccupancySensor 322782515
+start:
+yield
+# Service Access A+B
+startServiceAB:
+lbn r4 ProxSensor HASH("ServiceAccessProxSensorA+B") Activate Sum
+lbn r6 OccupancySensor HASH("OccSensorServiceAccessA+B") Activate Sum
+slt r12 r8 r4
+sgt r13 r6 0
+or r14 r12 r13
+sbn WallLightLong HASH("ServiceAccessLightA+B") On r14
+beq r13 1 resetLightCounterAB
+sge r13 r15 6
+beq r13 1 turnOffLightAB
+add r15 r15 1
+beq r12 1 OpenServiceAB
+j CloseServiceAB
+resetLightCounterAB:
+move r15 0
+OpenServiceAB:
+sbn CompositeDoor HASH("Service Access Suite A+B") Open 1
+move r10 0
+move r8 r4
+j CloseServiceAB
+CloseServiceAB:
+sge r12 r10 5
+beq r12 1 closeActionsAB
+add r10 r10 1
+move r8 r4
+j startServiceCD
+closeActionsAB:
+sbn CompositeDoor HASH("Service Access Suite A+B") Open 0
+move r10 0
+j startServiceCD
+turnOffLightAB:
+move r14 0
+sbn WallLightLong HASH("ServiceAccessLightA+B") On r14
+j startServiceAB
+# Service Access C+D
+startServiceCD:
+lbn r5 ProxSensor HASH("ServiceAccessProxSensorC+D") Activate Sum
+lbn r7 OccupancySensor HASH("OccSensorServiceAccessC+D") Activate Sum
+slt r12 r9 r5
+sgt r13 r7 0
+or r14 r12 r13
+sbn WallLightLong HASH("ServiceAccessLightC+D") On r14
+beq r13 1 resetLightCounterCD
+sge r13 r16 6
+beq r13 1 turnOffLightCD
+add r16 r16 1
+beq r12 1 OpenServiceCD
+j CloseServiceCD
+resetLightCounterCD:
+move r16 0
+OpenServiceCD:
+sbn CompositeDoor HASH("Service Access Suite C+D") Open 1
+move r11 0
+move r9 r5
+j CloseServiceCD
+CloseServiceCD:
+sge r12 r11 5
+beq r12 1 closeActionsCD
+add r11 r11 1
+move r9 r5
+j start
+closeActionsCD:
+sbn CompositeDoor HASH("Service Access Suite C+D") Open 0
+move r11 0
+j start
+turnOffLightCD:
+move r14 0
+sbn WallLightLong HASH("ServiceAccessLightC+D") On r14
+j startServiceCD</Instructions>
+</InstructionData>
