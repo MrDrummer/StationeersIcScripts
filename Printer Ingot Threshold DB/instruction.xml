@@ -70,10 +70,12 @@ push 50
 push HASH("Waspaloy")
 push 50
 
+# Number of ingots config option
+put db 511 17
+
 
 # Idle forever
 loop:
 yield
-j loop
-</Instructions>
+j loop</Instructions>
 </InstructionData>
