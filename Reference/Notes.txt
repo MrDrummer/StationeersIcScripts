@@ -1,0 +1,27 @@
+alias - like let/var
+define - like const
+
+ra - line reference (used with jump)
+
+sp - stack pointer
+
+vending machine - RequestHash
+
+
+flip flop-
+SettingOutput = 0 - sets ratio to 0:0
+Mode - way to deterministically set flipflop direction.
+
+
+Read contents of a printer:
+lr r0 d0 Contents HASH("Iron")
+
+Map reagent ore types to ingots:
+rmap (variable) (device to read from) (HASH("Iron"))
+
+CONTEXT:
+Iron Ore
+Iron Ingot
+Iron Reagent
+
+Printers use Reagents
