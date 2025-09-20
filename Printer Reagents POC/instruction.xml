@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134027794912152744</DateTime>
+  <GameVersion>0.2.5913.26036</GameVersion>
+  <Title>Printer Reagents POC</Title>
+  <Description>Trying to get the current Printer Reagents​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias Printer d0
+alias Display d1
+alias IngotQty r0
+alias IngotHash r1
+
+lr IngotQty Printer Contents HASH("Iron")
+rmap IngotHash Printer HASH("Iron")
+s Display Setting IngotQty
+s db Setting IngotHash</Instructions>
+</InstructionData>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134028412183062743</DateTime>
+  <GameVersion>0.2.5914.26037</GameVersion>
+  <Title>Printer Ingot Threshold DB</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions># Material DB Chip
+# Stores prefab hashes for all materials (metals) in the stack.
+# Persistent, no updating logic needed.
+
+main:
+# Reset SP
+move sp 0
+
+# --- Base Metals ---
+push HASH("Copper")
+push 200
+
+push HASH("Gold")
+push 200
+
+push HASH("Iron")
+push 200
+
+push HASH("Lead")
+push 200
+
+push HASH("Nickel")
+push 200
+
+push HASH("Silicon")
+push 200
+
+push HASH("Silver")
+push 200
+
+
+# --- Alloys ---
+push HASH("Constantan")
+push 100
+
+push HASH("Electrum")
+push 100
+
+push HASH("Invar")
+push 100
+
+push HASH("Solder")
+push 100
+
+push HASH("Steel")
+push 100
+
+
+# --- Superalloys ---
+push HASH("Astroloy")
+push 50
+
+push HASH("Hastelloy")
+push 50
+
+push HASH("Inconel")
+push 50
+
+push HASH("Stellite")
+push 50
+
+push HASH("Waspaloy")
+push 50
+
+
+# Idle forever
+loop:
+yield
+j loop
+</Instructions>
+</InstructionData>
