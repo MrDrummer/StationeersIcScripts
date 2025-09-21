@@ -19,9 +19,9 @@ alias IngotHash r14
 alias IngotDbIndex r15
 
 Start:
-  get IngotCount IngotDb 511 # Get total number of ingots to check
   clr db # clear stack
   move sp 0 # stack pointer to 0
+  get IngotCount IngotDb 511 # Get total number of ingots to check
   move IngotDbIndex 0
   j Loop
 
@@ -33,16 +33,19 @@ MainLoop:
 
   l r0 Printer ImportCount
   beqz r0 MainLoop
+  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+
+  clr db # clear stack
+  move sp 0 # stack pointer to 0
 
 Loop:
-  bgt IngotDbIndex r0 MainLoop
+bgt IngotDbIndex IngotCount MainLoop
   get IngotHash IngotDb IngotDbIndex
   add IngotDbIndex IngotDbIndex 1
   get IngotExpectedQty IngotDb IngotDbIndex
   add IngotDbIndex IngotDbIndex 1
   sub IngotRemainder IngotExpectedQty IngotActualQty
 
-  
 # Less than or equal to 0 - means we have enough of this ingot
 blez IngotRemainder MainLoop
   # Push the ingot hash and the remainder quantity onto the stack
@@ -54,7 +57,6 @@ blez IngotRemainder MainLoop
 j MainLoop
 
 ShowItem:
-  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
   sub r0 DialSetting 1 # Convert to 0 based index
   mul r0 r0 2 # Stack pointer index (2 values per item)
   get r1 db r0
