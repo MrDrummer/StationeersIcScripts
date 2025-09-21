@@ -6,47 +6,48 @@
   <Description>Identifies ingot requirements, accepts a "master" chip to clone instructions from, and handles accepting items​</Description>
   <Author>MrDrummer25</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
-  <Instructions>alias IngotDb d0
+  <Instructions>alias ReagentDb d0
 alias Printer d1
-alias IngotCount r9
-alias DialSetting r10
-alias IngotRemainder r11
-alias IngotExpectedQty r12
-alias IngotActualQty r13
-alias IngotHash r14
-alias IngotDbIndex r15
+alias ReagentCount r10
+alias DialSetting r11
+alias ReagentExpectedQty r12
+alias ReagentActualQty r13
+alias ReagentHash r14
+alias ReagentDbIndex r15
 
 Start:
-  clr db # clear stack
-  move sp 0 # stack pointer to 0
-  move IngotDbIndex 0
-  get IngotCount IngotDb 511 # Get total number of ingots to check
-  j Loop
+  get ReagentCount ReagentDb 511 # Get total number of ingots to check
+  j CheckContents
 
 MainLoop:
   yield
 
-  l r0 Printer ImportCount
-  beqz r0 MainLoop
-  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+  l r0 Printer ImportCount #has some metal been put in the printer?
+  beqzal r0 CheckContents
+j MainLoop
 
+CheckContents:
   clr db # clear stack
   move sp 0 # stack pointer to 0
+  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+  move ReagentDbIndex 0
 
-Loop:
-bgt IngotDbIndex IngotCount MainLoop
-  get IngotHash IngotDb IngotDbIndex
-  add IngotDbIndex IngotDbIndex 1
-  get IngotExpectedQty IngotDb IngotDbIndex
-  add IngotDbIndex IngotDbIndex 1
-  sub IngotRemainder IngotExpectedQty IngotActualQty
+ReagentLoop:
+bgt ReagentDbIndex ReagentCount MainLoop
+  get ReagentHash ReagentDb ReagentDbIndex
+  add ReagentDbIndex ReagentDbIndex 1
+  get ReagentExpectedQty ReagentDb ReagentDbIndex
+  add ReagentDbIndex ReagentDbIndex 1
+  lr ReagentActualQty Printer Contents ReagentHash
 
-# Less than or equal to 0 - means we have enough of this ingot
-blez IngotRemainder Loop
-  # Push the ingot hash and the remainder quantity onto the stack
+bge ReagentActualQty ReagentExpectedQty NextStep #if we have enough, check next one.
 
-  push IngotHash
-  push IngotRemainder
-  lr IngotActualQty Printer Contents IngotHash
-j Loop</Instructions>
+  push ReagentHash
+  sub r0 ReagentExpectedQty ReagentActualQty
+  push r0
+j NextStep
+
+NextStep:
+# j ReagentLoop
+j MainLoop</Instructions>
 </InstructionData>
