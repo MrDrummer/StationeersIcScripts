@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134029186177462273</DateTime>
+  <GameVersion>0.2.5915.26038</GameVersion>
+  <Title>Debugger</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias Chip d0
+alias Dial d1
+alias DialSetting r15
+
+Start:
+l DialSetting Dial Setting
+get r0 Chip DialSetting
+s db Setting r0</Instructions>
+</InstructionData>
