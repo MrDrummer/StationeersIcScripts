@@ -17,7 +17,7 @@ alias ReagentDbIndex r15
 
 Start:
   get ReagentCount ReagentDb 511 # Get total number of ingots to check
-  j CheckContents
+  jal CheckContents
 
 MainLoop:
   yield
@@ -30,10 +30,11 @@ CheckContents:
   clr db # clear stack
   move sp 0 # stack pointer to 0
   s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+  s db Setting 0 # clear config option
   move ReagentDbIndex 0
 
 ReagentLoop:
-bgt ReagentDbIndex ReagentCount MainLoop
+bgt ReagentDbIndex ReagentCount ra
   get ReagentHash ReagentDb ReagentDbIndex
   add ReagentDbIndex ReagentDbIndex 1
   get ReagentExpectedQty ReagentDb ReagentDbIndex
@@ -45,9 +46,8 @@ bge ReagentActualQty ReagentExpectedQty NextStep #if we have enough, check next 
   push ReagentHash
   sub r0 ReagentExpectedQty ReagentActualQty
   push r0
-j NextStep
 
 NextStep:
-# j ReagentLoop
-j MainLoop</Instructions>
+j ReagentLoop
+# j MainLoop</Instructions>
 </InstructionData>
