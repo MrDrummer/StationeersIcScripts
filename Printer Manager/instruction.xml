@@ -8,8 +8,6 @@
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias IngotDb d0
 alias Printer d1
-alias Display d2
-alias Dial d3
 alias IngotCount r9
 alias DialSetting r10
 alias IngotRemainder r11
@@ -21,15 +19,12 @@ alias IngotDbIndex r15
 Start:
   clr db # clear stack
   move sp 0 # stack pointer to 0
-  get IngotCount IngotDb 511 # Get total number of ingots to check
   move IngotDbIndex 0
+  get IngotCount IngotDb 511 # Get total number of ingots to check
   j Loop
 
 MainLoop:
   yield
-
-  l DialSetting Dial Setting
-  bnezal DialSetting ShowItem
 
   l r0 Printer ImportCount
   beqz r0 MainLoop
@@ -47,22 +42,11 @@ bgt IngotDbIndex IngotCount MainLoop
   sub IngotRemainder IngotExpectedQty IngotActualQty
 
 # Less than or equal to 0 - means we have enough of this ingot
-blez IngotRemainder MainLoop
+blez IngotRemainder Loop
   # Push the ingot hash and the remainder quantity onto the stack
 
   push IngotHash
   push IngotRemainder
   lr IngotActualQty Printer Contents IngotHash
-  s Display Setting IngotActualQty
-j MainLoop
-
-ShowItem:
-  sub r0 DialSetting 1 # Convert to 0 based index
-  mul r0 r0 2 # Stack pointer index (2 values per item)
-  get r1 db r0
-  s db Setting r1 # Set chip's setting to the selected item's prefab hash
-  add r0 r0 1 # Move to quantity index
-  get r2 db r0
-  s Display Setting r2 # Set display to quantity
-j ra</Instructions>
+j Loop</Instructions>
 </InstructionData>
