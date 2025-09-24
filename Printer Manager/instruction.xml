@@ -8,11 +8,10 @@
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>alias ReagentDb d0
 alias Printer d1
-alias ReagentCount r10
-alias DialSetting r11
-alias ReagentExpectedQty r12
-alias ReagentActualQty r13
-alias ReagentHash r14
+alias ReagentCount r11
+alias DialSetting r12
+alias ReagentExpectedQty r13
+alias ReagentActualQty r14
 alias ReagentDbIndex r15
 
 Start:
@@ -35,19 +34,21 @@ CheckContents:
 
 ReagentLoop:
 bgt ReagentDbIndex ReagentCount ra
-  get ReagentHash ReagentDb ReagentDbIndex
+  get r0 ReagentDb ReagentDbIndex
   add ReagentDbIndex ReagentDbIndex 1
   get ReagentExpectedQty ReagentDb ReagentDbIndex
   add ReagentDbIndex ReagentDbIndex 1
-  lr ReagentActualQty Printer Contents ReagentHash
+  lr ReagentActualQty Printer Contents r0
+  rmap r0 Printer r0
+  # TODO: Write to logic sorter
 
 bge ReagentActualQty ReagentExpectedQty NextStep #if we have enough, check next one.
-
-  push ReagentHash
+  push r0
   sub r0 ReagentExpectedQty ReagentActualQty
   push r0
 
 NextStep:
 j ReagentLoop
-# j MainLoop</Instructions>
+# j MainLoop # Use this instead for a single check
+</Instructions>
 </InstructionData>
