@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134034419215916026</DateTime>
+  <GameVersion>0.2.5924.26069</GameVersion>
+  <Title>Silo DB</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>push HASH("IronIngot")
+push HASH("IronIngot Silo")
+push STR("Iron")
+
+push HASH("CopperIngot")
+push HASH("CopperIngot Silo")
+push STR("Copper")
+
+push HASH("GoldIngot")
+push HASH("GoldIngot Silo")
+push STR("Gold")
+
+push HASH("SiliconIngot")
+push HASH("SiliconIngot Silo")
+push STR("Silico")
+
+push HASH("SilverIngot")
+push HASH("SilverIngot Silo")
+push STR("Silver")
+
+push HASH("LeadIngot")
+push HASH("LeadIngot Silo")
+push STR("Lead")
+
+push HASH("NickelIngot")
+push HASH("NickelIngot Silo")
+push STR("Nickel")
+
+push HASH("SteelIngot")
+push HASH("SteelIngot Silo")
+push STR("Steel")
+
+push HASH("SolderIngot")
+push HASH("SolderIngot Silo")
+push STR("Solder")
+
+push HASH("InvarIngot")
+push HASH("InvarIngot Silo")
+push STR("Invar")
+
+push HASH("ElectrumIngot")
+push HASH("ElectrumIngot Silo")
+push STR("Electr")
+
+push HASH("ConstantanIngot")
+push HASH("ConstantanIngot Silo")
+push STR("Consta")
+
+push HASH("WaspaloyIngot")
+push HASH("WaspaloyIngot Silo")
+push STR("Waspal")
+
+push HASH("InconelIngot")
+push HASH("InconelIngot Silo")
+push STR("Incone")
+
+push HASH("StelliteIngot")
+push HASH("StelliteIngot Silo")
+push STR("Stelli")
+
+push HASH("HastelloyIngot")
+push HASH("HastelloyIngot Silo")
+push STR("Hastel")
+
+push HASH("AstroloyIngot")
+push HASH("AstroloyIngot Silo")
+push STR("Astrol")
+
+put db 510 3 # Stack indexes per ingot (2: prefab hash, quantity)
+put db 511 17 # Number of ingots config option</Instructions>
+</InstructionData>
