@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134034402781801028</DateTime>
+  <GameVersion>0.2.5924.26069</GameVersion>
+  <Title>Multi Arc Furnace Manager</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias NameRom d0
+alias Display d1
+
+alias NameIndex r15
+alias NumEntries r14
+alias Name r13
+
+define ARC HASH("StructureArcFurnace")
+
+Start:
+s Display Mode DisplayMode.Default
+s Display On 1
+s NameRom On 0
+move NameIndex 0
+Loop:
+yield
+get NumEntries NameRom 511
+beqz NumEntries Loop
+s NameRom On 0
+
+get Name NameRom NameIndex
+
+lbn r0 ARC Name Activate Maximum
+lbns r1 ARC Name 0 Occupied Maximum
+
+or r0 r0 r1
+sbn ARC Name On r0
+sbn ARC Name Activate r0
+select r0 r0 Color.Yellow Color.Gray
+s Display Color r0
+
+s db Setting NameIndex
+add r0 NameIndex 1
+s Display Setting r0
+
+add NameIndex NameIndex 1
+mod NameIndex NameIndex NumEntries
+j Loop</Instructions>
+</InstructionData>

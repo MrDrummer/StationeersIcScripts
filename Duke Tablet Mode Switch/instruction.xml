@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134034428762046046</DateTime>
+  <GameVersion>0.2.5924.26069</GameVersion>
+  <Title>Duke Tablet Mode Switch</Title>
+  <Description>Switches the mode of an advanced tablet​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias TickCount r15
+define FastTick 10
+Start:
+move TickCount 999
+
+OnState:
+yield
+l r0 db On
+bnez r0 OnState
+#transition to off
+move TickCount 0
+
+OffState:
+yield
+add TickCount TickCount 1
+l r0 db On
+beqz r0 OffState
+#transition to on
+bge TickCount FastTick Start
+
+l r0 db Mode
+seqz r0 r0
+s db Mode r0
+j Start</Instructions>
+</InstructionData>

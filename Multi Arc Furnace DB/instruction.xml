@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134034402567536030</DateTime>
+  <GameVersion>0.2.5924.26069</GameVersion>
+  <Title>Multi Arc Furnace DB</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>#Arc furnace Name chip..
+
+Loop:
+s db Setting 0
+yield
+clr db
+move sp 0
+
+push HASH("ArcFurnace 1")
+push HASH("ArcFurnace 2")
+push HASH("ArcFurnace 3")
+push HASH("ArcFurnace 4")
+push HASH("ArcFurnace 5")
+push HASH("ArcFurnace 6")
+push HASH("ArcFurnace 7")
+push HASH("ArcFurnace 8")
+push HASH("ArcFurnace 9")
+push HASH("ArcFurnace 10")
+push HASH("ArcFurnace 11")
+push HASH("ArcFurnace 12")
+push HASH("ArcFurnace 13")
+push HASH("ArcFurnace 14")
+push HASH("ArcFurnace 15")
+push HASH("ArcFurnace 16")
+push HASH("ArcFurnace 17")
+push HASH("ArcFurnace 18")
+push HASH("ArcFurnace 19")
+push HASH("ArcFurnace 20")
+push HASH("ArcFurnace 21")
+push HASH("ArcFurnace 22")
+push HASH("ArcFurnace 23")
+push HASH("ArcFurnace 24")
+push HASH("ArcFurnace 25")
+push HASH("ArcFurnace 26")
+push HASH("ArcFurnace 27")
+push HASH("ArcFurnace 28")
+push HASH("ArcFurnace 29")
+push HASH("ArcFurnace 30")
+push HASH("ArcFurnace 31")
+push HASH("ArcFurnace 32")
+push HASH("ArcFurnace 33")
+
+put db 511 sp
+
+s db Setting sp
+yield
+j Loop</Instructions>
+</InstructionData>
