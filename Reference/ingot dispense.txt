@@ -1,0 +1,49 @@
+ingot dispense logic
+
+- manual count
+- furnace
+- manufacturing
+- reserve
+
+Each has a dedicated sorter.
+Each has a dedicated stack index
+Stack index offset by 1 is "acknowledged"
+
+Control IC compares current stack against requested and acknowledged.
+- Needs to acknowledge as much as possible
+
+requested - current = newTotal
+
+if newTotal is below 0, acknowledged is requested
+if newTotal is 0 or greater, acknowledged is newTotal.
+
+acknowledged set to index offset by 2.
+
+
+
+Still need a way to decrement the acknowledgements when the items are recieved?
+- Decremented by stacker
+
+
+Will need a heartbeat. stack index 510.
+Each chip will have a heartbeat ID. If the heartbeat matches self, run code, then increment heartbeat ID. Will need a generic END chip that just resets to 0. Or have the header chip have that responsibility.
+
+
+
+
+
+# What if the sorter doesn't have an internal request? What if it holds onto the item and uses the chip's stack as a reference. Then we have a reliable trigger.
+
+
+
+
+master chip
+- Tallies all sorter chips for requested items. (hash, requested, acknowledged)
+- Increments acknowledged after dispensed from silo.
+
+sorter chip
+- Has the hash, requested and acknowledged stack for ingots
+- Listens for items entering sorter
+- Increments internal acknowledged status
+- Waits for interlock turn
+- Decrements requested and acknowledged values on master chip
