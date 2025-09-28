@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134034561562181108</DateTime>
+  <GameVersion>0.2.5924.26069</GameVersion>
+  <Title>Ingot Selection Interface</Title>
+  <Description>Item scroller, Quantity selection, GO button and two displays for displaying request total and remainder. Prevents releasing more stacks than a silo contains.​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias IngotSiloDb d0
+alias ItemDial d1
+alias QuantityDial d2
+# alias RequestQtyDisplay d3
+# alias RemainingQtyDisplay d3
+alias SubmitButton d3
+alias RequestChip d5
+# Setting will be hash, used by display
+
+alias IngotStackIndex r12
+alias QuantityDialSetting r13
+alias SelectedIngotHash r14
+alias ItemDialSetting r15
+
+define IngotIndexSkip 2 # Stack indexes per ingot (2: prefab hash, quantity)
+
+Start:
+get r0 IngotSiloDb 511 # Get total number of ingots to check
+s ItemDial Mode r0 # Set max dial value
+# Do we want to reset dial to 0 on start?
+
+MainLoop:
+yield
+
+l ItemDialSetting ItemDial Setting
+l QuantityDialSetting QuantityDial Setting
+l r0 SubmitButton Setting
+
+bnezal ItemDialSetting ShowItem # != 0 ( &gt; 0 )
+beqzal ItemDialSetting ClearItem # = 0
+bnezal r0 RequestItem # != 0 ( &gt; 0 )
+
+j MainLoop
+
+ClearMemory:
+# Set displays to green &amp; off
+# Reset dials to 0
+
+ShowItem:
+sub r0 ItemDialSetting 1 # convert to 0 based index
+mul IngotStackIndex r0 IngotIndexSkip
+get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
+s db Setting SelectedIngotHash
+# Set displays to show count and request count
+
+j ra # Jump back to main loop
+
+ClearItem:
+s db Setting 0
+j ra
+
+RequestItem:
+clr RequestChip
+push SelectedIngotHash
+push QuantityDialSetting
+
+j ra</Instructions>
+</InstructionData>
