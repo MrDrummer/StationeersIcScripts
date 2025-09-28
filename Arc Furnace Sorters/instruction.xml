@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134035700425219060</DateTime>
+  <GameVersion>0.2.5926.26071</GameVersion>
+  <Title>Arc Furnace Sorters</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias CentrifugeSorter d0
+alias SmeltableSorter d1
+alias SiloSorter d2
+alias IceSorter d3
+Start:
+# Sorters:
+# - Centrifuge Sorter (Dirty Ore, Space Ore)
+# - Smeltable Sorter (Ore minus Coal, Cobalt, Hydrocarbon, Uranium Ore)
+# - Silo Sorter (Ingots, Coal, Cobalt, Hydrocarbon, Uranium Ore)
+# - Ice Sorter
+# - Everything else (Rejection)
+s CentrifugeSorter Mode 1 # Match Any
+move r0 HASH("ItemDirtyOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put CentrifugeSorter 0 r0
+move r0 HASH("ItemSpaceOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put CentrifugeSorter 1 r0
+move r0 HASH("ItemReagentMix")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put CentrifugeSorter 2 r0
+
+s SmeltableSorter Mode 1 # Match Any
+move r0 HASH("ItemIronOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 0 r0
+move r0 HASH("ItemCopperOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 1 r0
+move r0 HASH("ItemGoldOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 2 r0
+move r0 HASH("ItemSiliconOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 3 r0
+move r0 HASH("ItemSilverOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 4 r0
+move r0 HASH("ItemLeadOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 5 r0
+move r0 HASH("ItemNickelOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SmeltableSorter 6 r0
+
+s SiloSorter Mode 1 # Match Any
+move r0 HASH("ItemIronIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 0 r0
+move r0 HASH("ItemCopperIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 1 r0
+move r0 HASH("ItemGoldIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 2 r0
+move r0 HASH("ItemSiliconIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 3 r0
+move r0 HASH("ItemSilverIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 4 r0
+move r0 HASH("ItemLeadIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 5 r0
+move r0 HASH("ItemNickelIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 6 r0
+move r0 HASH("ItemCharcoal")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 7 r0
+move r0 HASH("ItemCoalOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 8 r0
+move r0 HASH("ItemUraniumOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 9 r0
+move r0 HASH("ItemCobaltOre")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 10 r0
+
+s SiloSorter Mode 1 # Match Any
+move r0 HASH("ItemIce")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 0 r0
+move r0 HASH("ItemNitrice")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 1 r0
+move r0 HASH("ItemOxite")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 2 r0
+move r0 HASH("ItemVolatiles")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SiloSorter 3 r0</Instructions>
+</InstructionData>
