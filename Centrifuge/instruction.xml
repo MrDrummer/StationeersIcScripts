@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134035438036967712</DateTime>
+  <GameVersion>0.2.5925.26070</GameVersion>
+  <Title>Centrifuge</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>define CENT HASH("StructureCentrifuge")
+define CentrifugeFull 300
+
+alias NumDevices r15
+alias DeviceSplit r14
+alias DeviceIndex r13
+alias DeviceName r12
+
+Start:
+clr db
+move DeviceIndex 0
+move sp 0
+push HASH("Centrifuge1")
+push HASH("Centrifuge2")
+push HASH("Centrifuge3")
+push HASH("Centrifuge4")
+push HASH("Centrifuge5")
+push HASH("Centrifuge6")
+push HASH("Centrifuge7")
+push HASH("Centrifuge8")
+push HASH("Centrifuge9")
+push HASH("Centrifuge10")
+push HASH("Centrifuge11")
+push HASH("Centrifuge12")
+move DeviceSplit sp
+
+Loop:
+yield
+get DeviceName db DeviceIndex
+beqzal DeviceName ResetCount ## reset index to 0 if value is 0 (end of loop)
+
+s db Setting DeviceIndex
+bltal DeviceIndex DeviceSplit DoCentrifuge
+add DeviceIndex DeviceIndex 1
+j Loop
+
+DoCentrifuge:
+lbn r0 CENT DeviceName Reagents Minimum
+bnan r0 ra
+sge r1 r0 CentrifugeFull
+sgtz r0 r0 #true if any left
+lbn r2 CENT DeviceName Open Minimum
+lbns r3 CENT DeviceName 0 Occupied Minimum
+
+or r4 r2 r1 #if already open or full
+and r4 r4 r0 #and there's some bits left
+sbn CENT DeviceName Open r4
+
+or r0 r0 r3 #if input slot or has reagents
+or r0 r0 r4 #or it's open
+sbn CENT DeviceName On r0
+j ra
+
+ResetCount:
+move DeviceIndex 0
+j ra</Instructions>
+</InstructionData>
