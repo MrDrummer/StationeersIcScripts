@@ -6,71 +6,71 @@
   <Description>​</Description>
   <Author>MrDrummer25</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
-  <Instructions>push HASH("IronIngot")
+  <Instructions>push HASH("ItemIronIngot")
 push HASH("IronIngot Silo")
 push STR("Iron")
 
-push HASH("CopperIngot")
+push HASH("ItemCopperIngot")
 push HASH("CopperIngot Silo")
 push STR("Copper")
 
-push HASH("GoldIngot")
+push HASH("ItemGoldIngot")
 push HASH("GoldIngot Silo")
 push STR("Gold")
 
-push HASH("SiliconIngot")
+push HASH("ItemSiliconIngot")
 push HASH("SiliconIngot Silo")
 push STR("Silico")
 
-push HASH("SilverIngot")
+push HASH("ItemSilverIngot")
 push HASH("SilverIngot Silo")
 push STR("Silver")
 
-push HASH("LeadIngot")
+push HASH("ItemLeadIngot")
 push HASH("LeadIngot Silo")
 push STR("Lead")
 
-push HASH("NickelIngot")
+push HASH("ItemNickelIngot")
 push HASH("NickelIngot Silo")
 push STR("Nickel")
 
-push HASH("SteelIngot")
+push HASH("ItemSteelIngot")
 push HASH("SteelIngot Silo")
 push STR("Steel")
 
-push HASH("SolderIngot")
+push HASH("ItemSolderIngot")
 push HASH("SolderIngot Silo")
 push STR("Solder")
 
-push HASH("InvarIngot")
+push HASH("ItemInvarIngot")
 push HASH("InvarIngot Silo")
 push STR("Invar")
 
-push HASH("ElectrumIngot")
+push HASH("ItemElectrumIngot")
 push HASH("ElectrumIngot Silo")
 push STR("Electr")
 
-push HASH("ConstantanIngot")
+push HASH("ItemConstantanIngot")
 push HASH("ConstantanIngot Silo")
 push STR("Consta")
 
-push HASH("WaspaloyIngot")
+push HASH("ItemWaspaloyIngot")
 push HASH("WaspaloyIngot Silo")
 push STR("Waspal")
 
-push HASH("InconelIngot")
+push HASH("ItemInconelIngot")
 push HASH("InconelIngot Silo")
 push STR("Incone")
 
-push HASH("StelliteIngot")
+push HASH("ItemStelliteIngot")
 push HASH("StelliteIngot Silo")
 push STR("Stelli")
 
-push HASH("HastelloyIngot")
+push HASH("ItemHastelloyIngot")
 push HASH("HastelloyIngot Silo")
 push STR("Hastel")
 
-push HASH("AstroloyIngot")
+push HASH("ItemAstroloyIngot")
 push HASH("AstroloyIngot Silo")
 push STR("Astrol")
 
