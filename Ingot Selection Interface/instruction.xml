@@ -25,70 +25,76 @@ alias ItemDialSetting r15
 define DESTINATIONID 0
 
 # SIZE, TYPE, DESTINATIONID
-
 define IngotIndexSkip 3 # Stack indexes per ingot (3: prefab hash, silo hash, string label
 
 Start:
 move ItemDialSetting -1
 get r0 IngotSiloDb 511 # Get total number of ingots to check
 s ItemDial Mode r0 # Set max dial value
+s LabelDisplay Color Color.White
+s LabelDisplay Mode DisplayMode.String
 
 MainLoop:
 yield
-
 l r0 ItemDial Setting
+bneal r0 ItemDialSetting ChangeItem # not the same as the dial
 
 l QuantityDialSetting QuantityDial Setting
 
-bneal r0 ItemDialSetting ChangeItem # != 0 ( &gt; 0 )
-beqzal ItemDialSetting ClearItem # = 0
-l r0 SubmitButton Setting
-bnezal r0 RequestItem # != 0 ( &gt; 0 )
+l r0 SubmitButton Activate
+bnezal r0 RequestItem # != 0
 
 j MainLoop
 
 ChangeItem:
-s LabelDisplay Color Color.White
-
-# TODO: REMOVE THIS
-s InterlockMemory Setting 0
 move ItemDialSetting r0
-s LabelDisplay On 1
+snez r2 r0
+s LabelDisplay On r0
+beqz r2 ra #if zero, back the way we came
 sub r0 ItemDialSetting 1 # convert to 0 based index
 mul IngotStackIndex r0 IngotIndexSkip
 get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get silo hash
+#Limit quantity dial max to available in silo
 lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
+
+# TODO: Fix bug where we set max to 1 by default when the silo may be empty.
 s QuantityDial Mode r1
-s QuantityDial Setting 0
+s QuantityDial Setting 1
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get string label
-s LabelDisplay On 1
-s LabelDisplay Mode DisplayMode.String
 s LabelDisplay Setting r0
-
 j ra # Jump back to main loop
 
-ClearItem:
-s LabelDisplay On 0
-s QuantityDial Setting 0
-j ra
 
 RequestItem:
+s SubmitButton Lock 1
+max QuantityDialSetting QuantityDialSetting 1
+
 move RequestCode QuantityDialSetting
 mul RequestCode RequestCode 100 # Max 100 items per request
 add RequestCode RequestCode ItemDialSetting
 mul RequestCode RequestCode 100 # Shift left 2 decimal places
 add RequestCode RequestCode DESTINATIONID # Add destination ID (0 for printer)
 
-s LabelDisplay Color Color.Orange # Indicate Waiting
+s LabelDisplay Color Color.Gray # Indicate Waiting
 InterlockWaitLoop:
 yield
 l r0 InterlockMemory Setting
 bnez r0 InterlockWaitLoop # Wait for interlock to clear
-s InterlockMemory Setting RequestCode # Write request code to interlock memory
-s LabelDisplay Color Color.Green # Indicate request sent
 
+s InterlockMemory Setting RequestCode # Write request code to interlock memory
+s LabelDisplay Color Color.Orange # Indicate request sent
+RequestFullfillWait:
+yield
+l r0 InterlockMemory Setting
+beq r0 RequestCode RequestFullfillWait
+sgez r0 r0
+select r0 r0 Color.Green Color.Red
+s LabelDisplay Color r0
+sleep 1
+s LabelDisplay Color Color.White
+s SubmitButton Lock 0
 j ra</Instructions>
 </InstructionData>
