@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134036508822977793</DateTime>
+  <GameVersion>0.2.5926.26071</GameVersion>
+  <Title>Item Distribution Controller</Title>
+  <Description>Listens to the value of a memory cell and decodes the value to determine the destination, type of item and how many stacks requested.​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias IngotSiloDb d0
+alias SorterDb d1
+alias InterlockMemory d2
+
+alias ItemHash r9
+alias SiloId r10
+alias SorterId r11
+alias SIZE r12
+alias TYPE r13
+alias DESTINATIONID r14
+alias RequestCode r15
+
+define SILO HASH("StructureSDBSilo")
+define SORTER HASH("StructureLogicSorter")
+
+Start:
+
+MainLoop:
+yield
+# SIZE, TYPE, DESTINATIONID
+l RequestCode InterlockMemory Setting
+
+bnezal RequestCode ProcessRequest
+j MainLoop
+
+
+ProcessRequest:
+mod DESTINATIONID RequestCode 100
+div RequestCode RequestCode 100
+trunc RequestCode RequestCode
+mod TYPE RequestCode 100
+div RequestCode RequestCode 100
+trunc RequestCode RequestCode
+mod SIZE RequestCode 100
+
+# Set the sorter to filter specific item and qty
+get r0 SorterDb DESTINATIONID
+lbn SorterId SORTER r0 ReferenceId Minimum
+
+mul r0 TYPE 3 # INGOT DB: 3 entries per ingot- (3: item hash, silo hash, string name)
+get ItemHash IngotSiloDb r0 # Get item hash
+add r0 r0 1
+get r0 IngotSiloDb r0 # Get silo hash
+lbn SiloId SILO r0 ReferenceId Minimum
+
+move r0 SIZE
+sll r0 r0 8
+or r0 r0 SorterInstruction.LimitNextExecutionByCount
+put SorterId 0 r0
+
+move r0 ItemHash
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SorterId 1 r0
+
+# Dispatch items from silo
+get SiloId IngotSiloDb r0 # Get silo hash
+
+
+# TODO: replace with a loop that looks at "ExportCount" and waits until it is at the expected value
+sbn SILO r0 Open 1 # Request items
+mul SIZE SIZE 2 # Seconds per item
+sleep SIZE
+
+s InterlockMemory Setting 0
+
+j ra
+
+# destination - set sorter db
+# type - get silo ID from silo db
+# qty - verify that the silo has enough, if not, set to max available
+# set sorter stack to expect this item and qty
+# unload specified qty from identified silo</Instructions>
+</InstructionData>
