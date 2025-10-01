@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134037315974299337</DateTime>
+  <GameVersion>0.2.5929.26081</GameVersion>
+  <Title>Vending Stacker</Title>
+  <Description>Auto ejects full stacks from vending machine slots.​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias VendingMachine d0
+alias SlotDisplay d1
+alias QuantityDisplay d2
+
+define FirstSlot 2
+define LastSlot 101
+
+alias SlotIndex r15
+
+s SlotDisplay On 1
+s QuantityDisplay On 1
+
+Start:
+move SlotIndex FirstSlot
+Loop:
+yield
+s SlotDisplay Setting SlotIndex
+
+ls r2 VendingMachine SlotIndex PrefabHash
+s db Setting r2
+
+ls r0 VendingMachine SlotIndex Quantity
+s QuantityDisplay Setting r0
+
+ls r1 VendingMachine SlotIndex MaxQuantity
+seq r3 r0 r1
+snez r4 r2
+and r3 r3 r4
+select r3 r3 Color.Green Color.Gray
+s QuantityDisplay Color r3
+
+beqz r2 NextSlot #hash is zero
+beqz r0 NextSlot #quantity is zero
+blt r0 r1 NextSlot #not a full stack
+
+s VendingMachine RequestHash r2
+sleep 3
+
+NextSlot:
+add SlotIndex SlotIndex 1
+ble SlotIndex LastSlot Loop
+j Start</Instructions>
+</InstructionData>
