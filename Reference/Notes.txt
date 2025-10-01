@@ -31,5 +31,8 @@ Printers use Reagents
 
 lbn cannot do PUT and GET directly with the stack via the name:
 - lbn can read the reference ID
-- PUT and GET can be done via reference ID
+`lbn DeviceDb PrefabHash ObjectHash ReferenceId`
 
+- PUT and GET can be done via reference ID
+`put DeviceDb val`
+`get Value DeviceDb Index`
