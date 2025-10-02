@@ -48,8 +48,8 @@ lbn SorterId SORTER r0 ReferenceId Minimum
 mul r0 TYPE 3 # INGOT DB: 3 entries per ingot- (3: item hash, silo hash, string name)
 get ItemHash IngotSiloDb r0 # Get item hash
 add r0 r0 1
-get r0 IngotSiloDb r0 # Get silo hash
-lbn SiloId SILO r0 ReferenceId Minimum
+get SiloId IngotSiloDb r0 # Get silo hash
+# lbn SiloId SILO r0 ReferenceId Minimum
 
 move r0 SIZE
 sll r0 r0 8
@@ -62,13 +62,15 @@ or r0 r0 SorterInstruction.FilterPrefabHashEquals
 put SorterId 1 r0
 
 # Dispatch items from silo
-get SiloId IngotSiloDb r0 # Get silo hash
+# get SiloId IngotSiloDb r0 # Get silo hash
 
 
 # TODO: replace with a loop that looks at "ExportCount" and waits until it is at the expected value
-sbn SILO r0 Open 1 # Request items
-mul SIZE SIZE 2 # Seconds per item
+sbn SILO SiloId Open 1 # Request items
+s db Setting SiloId
+mul SIZE SIZE 0.5 # Seconds per item
 sleep SIZE
+sbn SILO SiloId Open 0 # Stop request
 
 s InterlockMemory Setting 0
 
