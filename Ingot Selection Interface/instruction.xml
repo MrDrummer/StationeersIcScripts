@@ -16,6 +16,7 @@ alias LabelDisplay d4
 alias InterlockMemory d5
 # Setting will be hash, used by display
 
+alias IngotIndexSkip r9
 alias RequestCode r10
 alias IngotStackIndex r11
 alias IngotIndex r12
@@ -23,13 +24,12 @@ alias QuantityDialSetting r13
 alias SelectedIngotHash r14
 alias ItemDialSetting r15
 
-define DESTINATIONID 0
-
 # SIZE, TYPE, DESTINATIONID
-define IngotIndexSkip 3 # Stack indexes per ingot (3: prefab hash, silo hash, string label)
+define DESTINATIONID 0
 
 Start:
 move ItemDialSetting -1
+get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, sorter hash, string label, reserved)
 get r0 IngotSiloDb 511 # Get total number of ingots to check
 s ItemDial Mode r0 # Set max dial value
 s LabelDisplay Color Color.White
@@ -56,14 +56,20 @@ mul IngotStackIndex IngotIndex IngotIndexSkip
 get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get silo hash
-#Limit quantity dial max to available in silo
 lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
 
+add IngotStackIndex IngotStackIndex 1
+get r0 IngotSiloDb IngotStackIndex # Get vending hash
+lbn r2 HASH("StructureVendingMachineSmall") r0 Quantity Sum
+add r3 r1 r2
+add r3 r3 2 # account for ingots in chutes
+#Limit quantity dial max to available in silo
+
 # TODO: Fix bug where we set max to 1 by default when the silo may be empty.
-s QuantityDial Mode r1
+s QuantityDial Mode r3
 
 #s QuantityDial Setting 1
-add IngotStackIndex IngotStackIndex 1
+add IngotStackIndex IngotStackIndex 3
 get r0 IngotSiloDb IngotStackIndex # Get string label
 s LabelDisplay Setting r0
 j ra # Jump back to main loop
