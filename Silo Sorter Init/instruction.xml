@@ -7,36 +7,69 @@
   <Author>MrDrummer25</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
   <Instructions>#one run Sorter initialisation chip
-alias SiloROM d0
-
-define NAMEOFFSET 3
-define HASHOFFSET 0
 define SORTERHASH HASH("StructureLogicSorter")
+define NumItems 20
 
-alias NumItems r15
 alias SorterName r14
 alias IngotHash r13
 alias SorterID r12
 alias SortCommand r11
-alias DataSize r10
 
 Start:
-get NumItems SiloROM 511
-get DataSize SiloROM 510
+clr db
+move sp 0
+push HASH("ItemIronIngot")
+push HASH("IronIngot Sorter")
+push HASH("ItemCopperIngot")
+push HASH("CopperIngot Sorter")
+push HASH("ItemGoldIngot")
+push HASH("GoldIngot Sorter")
+push HASH("ItemSiliconIngot")
+push HASH("SiliconIngot Sorter")
+push HASH("ItemSilverIngot")
+push HASH("SilverIngot Sorter")
+push HASH("ItemLeadIngot")
+push HASH("LeadIngot Sorter")
+push HASH("ItemNickelIngot")
+push HASH("NickelIngot Sorter")
+push HASH("ItemSteelIngot")
+push HASH("SteelIngot Sorter")
+push HASH("ItemSolderIngot")
+push HASH("SolderIngot Sorter")
+push HASH("ItemInvarIngot")
+push HASH("InvarIngot Sorter")
+push HASH("ItemElectrumIngot")
+push HASH("ElectrumIngot Sorter")
+push HASH("ItemConstantanIngot")
+push HASH("ConstantanIngot Sorter")
+push HASH("ItemWaspaloyIngot")
+push HASH("WaspaloyIngot Sorter")
+push HASH("ItemInconelIngot")
+push HASH("InconelIngot Sorter")
+push HASH("ItemStelliteIngot")
+push HASH("StelliteIngot Sorter")
+push HASH("ItemHastelloyIngot")
+push HASH("HastelloyIngot Sorter")
+push HASH("ItemAstroloyIngot")
+push HASH("AstroloyIngot Sorter")
+push HASH("ItemCobaltOre")
+push HASH("Cobalt Sorter")
+push HASH("ItemCoal")
+push HASH("Coal Sorter")
+push HASH("ItemUraniumOre")
+push HASH("Uranium Sorter")
 
 move r0 0
 SorterInitLoop:
-mul r1 r0 DataSize
-s db Setting r0
-add SorterName r1 NAMEOFFSET
-get SorterName SiloROM SorterName
+mul r1 r0 2
 
-add IngotHash r1 HASHOFFSET
-get IngotHash SiloROM IngotHash
+get IngotHash db r1
+
+add r1 r1 1
+get SorterName db r1
 
 lbn SorterID SORTERHASH SorterName ReferenceId Minimum
 
-s SorterID On 0
 sll SortCommand IngotHash 8
 or SortCommand SortCommand SorterInstruction.FilterPrefabHashEquals
 put SorterID 0 SortCommand
