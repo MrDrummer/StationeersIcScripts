@@ -26,24 +26,21 @@ get DataSize SiloROM 510
 
 move r0 0
 SorterInitLoop:
-#s db Setting r0
 mul r1 r0 DataSize
-#s db Setting r1
-add SorterName r0 NAMEOFFSET
-s db Setting SorterName
+s db Setting r0
+add SorterName r1 NAMEOFFSET
 get SorterName SiloROM SorterName
 
-add IngotHash r0 HASHOFFSET
+add IngotHash r1 HASHOFFSET
 get IngotHash SiloROM IngotHash
 
 lbn SorterID SORTERHASH SorterName ReferenceId Minimum
-# s db Setting SorterName
-s SorterID On 1
 
+s SorterID On 0
 sll SortCommand IngotHash 8
 or SortCommand SortCommand SorterInstruction.FilterPrefabHashEquals
-# s db Setting SorterID
 put SorterID 0 SortCommand
+s SorterID On 1
 
 beqz SorterID Exit
 add r0 r0 1
