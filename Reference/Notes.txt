@@ -5,6 +5,8 @@ ra - line reference (used with jump)
 
 sp - stack pointer
 
+NOTE: sp doesn't reset when the chip is turned on. It only resets when putting the chip back into the housing- or `clr db`
+
 vending machine - RequestHash
 
 

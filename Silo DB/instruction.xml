@@ -6,74 +6,130 @@
   <Description>​</Description>
   <Author>MrDrummer25</Author>
   <WorkshopFileHandle>0</WorkshopFileHandle>
-  <Instructions>push HASH("ItemIronIngot")
+  <Instructions>clr db
+move sp 0
+push HASH("ItemIronIngot")
 push HASH("IronIngot Silo")
+push HASH("IronIngot Vending")
+push HASH("IronIngot Sorter")
+push 0
 push STR("Iron")
-
 push HASH("ItemCopperIngot")
 push HASH("CopperIngot Silo")
+push HASH("CopperIngot Vending")
+push HASH("CopperIngot Sorter")
+push 0
 push STR("Copper")
-
 push HASH("ItemGoldIngot")
 push HASH("GoldIngot Silo")
+push HASH("GoldIngot Vending")
+push HASH("GoldIngot Sorter")
+push 0
 push STR("Gold")
-
 push HASH("ItemSiliconIngot")
 push HASH("SiliconIngot Silo")
+push HASH("SiliconIngot Vending")
+push HASH("SiliconIngot Sorter")
+push 0
 push STR("Silico")
-
 push HASH("ItemSilverIngot")
 push HASH("SilverIngot Silo")
+push HASH("SilverIngot Vending")
+push HASH("SilverIngot Sorter")
+push 0
 push STR("Silver")
-
 push HASH("ItemLeadIngot")
 push HASH("LeadIngot Silo")
+push HASH("LeadIngot Vending")
+push HASH("LeadIngot Sorter")
+push 0
 push STR("Lead")
-
 push HASH("ItemNickelIngot")
 push HASH("NickelIngot Silo")
+push HASH("NickelIngot Vending")
+push HASH("NickelIngot Sorter")
+push 0
 push STR("Nickel")
-
 push HASH("ItemSteelIngot")
 push HASH("SteelIngot Silo")
+push HASH("SteelIngot Vending")
+push HASH("SteelIngot Sorter")
+push 0
 push STR("Steel")
-
 push HASH("ItemSolderIngot")
 push HASH("SolderIngot Silo")
+push HASH("SolderIngot Vending")
+push HASH("SolderIngot Sorter")
+push 0
 push STR("Solder")
-
 push HASH("ItemInvarIngot")
 push HASH("InvarIngot Silo")
+push HASH("InvarIngot Vending")
+push HASH("InvarIngot Sorter")
+push 0
 push STR("Invar")
-
 push HASH("ItemElectrumIngot")
 push HASH("ElectrumIngot Silo")
+push HASH("ElectrumIngot Vending")
+push HASH("ElectrumIngot Sorter")
+push 0
 push STR("Electr")
-
 push HASH("ItemConstantanIngot")
 push HASH("ConstantanIngot Silo")
+push HASH("ConstantanIngot Vending")
+push HASH("ConstantanIngot Sorter")
+push 0
 push STR("Consta")
-
 push HASH("ItemWaspaloyIngot")
 push HASH("WaspaloyIngot Silo")
+push HASH("WaspaloyIngot Vending")
+push HASH("WaspaloyIngot Sorter")
+push 0
 push STR("Waspal")
-
 push HASH("ItemInconelIngot")
 push HASH("InconelIngot Silo")
+push HASH("InconelIngot Vending")
+push HASH("InconelIngot Sorter")
+push 0
 push STR("Incone")
-
 push HASH("ItemStelliteIngot")
 push HASH("StelliteIngot Silo")
+push HASH("StelliteIngot Vending")
+push HASH("StelliteIngot Sorter")
+push 0
 push STR("Stelli")
-
 push HASH("ItemHastelloyIngot")
 push HASH("HastelloyIngot Silo")
+push HASH("HastelloyIngot Vending")
+push HASH("HastelloyIngot Sorter")
+push 0
 push STR("Hastel")
-
 push HASH("ItemAstroloyIngot")
 push HASH("AstroloyIngot Silo")
+push HASH("AstroloyIngot Vending")
+push HASH("AstroloyIngot Sorter")
+push 0
 push STR("Astrol")
-
-put db 510 3 # Stack indexes per ingot (2: prefab hash, quantity)
-put db 511 17 # Number of ingots config option</Instructions>
+push HASH("ItemCobaltOre")
+push HASH("Cobalt Silo")
+push HASH("Cobalt Vending")
+push HASH("Cobalt Sorter")
+push 0
+push STR("Cobalt")
+push HASH("ItemCoal")
+push HASH("Coal Silo")
+push HASH("Coal Vending")
+push HASH("Coal Sorter")
+push 0
+push STR("Coal")
+push HASH("ItemUraniumOre")
+push HASH("Uranium Silo")
+push HASH("Uranium Vending")
+push HASH("Uranium Sorter")
+push 0
+push STR("Uraniu")
+put db 510 6 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, sorter has
+put db 511 20 # Number of ingots config option
+# TODO: Move entries per entry to define. 511 length is pointer / that
+s db On 0</Instructions>
 </InstructionData>

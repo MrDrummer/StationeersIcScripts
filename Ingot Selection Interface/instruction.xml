@@ -16,8 +16,9 @@ alias LabelDisplay d4
 alias InterlockMemory d5
 # Setting will be hash, used by display
 
-alias RequestCode r11
-alias IngotStackIndex r12
+alias RequestCode r10
+alias IngotStackIndex r11
+alias IngotIndex r12
 alias QuantityDialSetting r13
 alias SelectedIngotHash r14
 alias ItemDialSetting r15
@@ -25,7 +26,7 @@ alias ItemDialSetting r15
 define DESTINATIONID 0
 
 # SIZE, TYPE, DESTINATIONID
-define IngotIndexSkip 3 # Stack indexes per ingot (3: prefab hash, silo hash, string label
+define IngotIndexSkip 3 # Stack indexes per ingot (3: prefab hash, silo hash, string label)
 
 Start:
 move ItemDialSetting -1
@@ -35,7 +36,6 @@ s LabelDisplay Color Color.White
 s LabelDisplay Mode DisplayMode.String
 
 MainLoop:
-yield
 l r0 ItemDial Setting
 bneal r0 ItemDialSetting ChangeItem # not the same as the dial
 
@@ -51,8 +51,8 @@ move ItemDialSetting r0
 snez r2 r0
 s LabelDisplay On r0
 beqz r2 ra #if zero, back the way we came
-sub r0 ItemDialSetting 1 # convert to 0 based index
-mul IngotStackIndex r0 IngotIndexSkip
+sub IngotIndex ItemDialSetting 1 # convert to 0 based index
+mul IngotStackIndex IngotIndex IngotIndexSkip
 get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get silo hash
@@ -61,7 +61,8 @@ lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
 
 # TODO: Fix bug where we set max to 1 by default when the silo may be empty.
 s QuantityDial Mode r1
-s QuantityDial Setting 1
+
+#s QuantityDial Setting 1
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get string label
 s LabelDisplay Setting r0
@@ -74,7 +75,7 @@ max QuantityDialSetting QuantityDialSetting 1
 
 move RequestCode QuantityDialSetting
 mul RequestCode RequestCode 100 # Max 100 items per request
-add RequestCode RequestCode ItemDialSetting
+add RequestCode RequestCode IngotIndex
 mul RequestCode RequestCode 100 # Shift left 2 decimal places
 add RequestCode RequestCode DESTINATIONID # Add destination ID (0 for printer)
 

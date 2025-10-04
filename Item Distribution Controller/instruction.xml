@@ -10,19 +10,20 @@
 alias SorterDb d1
 alias InterlockMemory d2
 
+alias IngotIndexSkip r8
 alias ItemHash r9
-alias SiloId r10
+alias VendingId r10
 alias SorterId r11
 alias SIZE r12
 alias TYPE r13
 alias DESTINATIONID r14
 alias RequestCode r15
 
-define SILO HASH("StructureSDBSilo")
+define VENDING HASH("StructureVendingMachineSmall")
 define SORTER HASH("StructureLogicSorter")
 
 Start:
-
+get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, sorter hash, string label, reserved)
 MainLoop:
 yield
 # SIZE, TYPE, DESTINATIONID
@@ -45,12 +46,13 @@ mod SIZE RequestCode 100
 get r0 SorterDb DESTINATIONID
 lbn SorterId SORTER r0 ReferenceId Minimum
 
-mul r0 TYPE 3 # INGOT DB: 3 entries per ingot- (3: item hash, silo hash, string name)
+mul r0 TYPE IngotIndexSkip
 get ItemHash IngotSiloDb r0 # Get item hash
-add r0 r0 1
-get SiloId IngotSiloDb r0 # Get silo hash
-# lbn SiloId SILO r0 ReferenceId Minimum
+add r0 r0 2
+get VendingId IngotSiloDb r0 # Get silo hash
+# lbn VendingId VENDING r0 ReferenceId Minimum
 
+s db Setting SIZE
 move r0 SIZE
 sll r0 r0 8
 or r0 r0 SorterInstruction.LimitNextExecutionByCount
@@ -62,23 +64,13 @@ or r0 r0 SorterInstruction.FilterPrefabHashEquals
 put SorterId 1 r0
 
 # Dispatch items from silo
-# get SiloId IngotSiloDb r0 # Get silo hash
-
-
-# TODO: replace with a loop that looks at "ExportCount" and waits until it is at the expected value
-sbn SILO SiloId Open 1 # Request items
-s db Setting SiloId
-mul SIZE SIZE 0.5 # Seconds per item
-sleep SIZE
-sbn SILO SiloId Open 0 # Stop request
+sbn VENDING VendingId ClearMemory 1
+IngotEjectLoop:
+sbn VENDING VendingId RequestHash ItemHash
+sleep 1
+lbn r0 VENDING VendingId ExportCount Minimum
+blt r0 SIZE IngotEjectLoop
 
 s InterlockMemory Setting 0
-
-j ra
-
-# destination - set sorter db
-# type - get silo ID from silo db
-# qty - verify that the silo has enough, if not, set to max available
-# set sorter stack to expect this item and qty
-# unload specified qty from identified silo</Instructions>
+j ra</Instructions>
 </InstructionData>

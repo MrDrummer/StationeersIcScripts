@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134040020504255158</DateTime>
+  <GameVersion>0.2.5934.26097</GameVersion>
+  <Title>Silo Sorter Init</Title>
+  <Description>​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>#one run Sorter initialisation chip
+alias SiloROM d0
+
+define NAMEOFFSET 3
+define HASHOFFSET 0
+define SORTERHASH HASH("StructureLogicSorter")
+
+alias NumItems r15
+alias SorterName r14
+alias IngotHash r13
+alias SorterID r12
+alias SortCommand r11
+alias DataSize r10
+
+Start:
+get NumItems SiloROM 511
+get DataSize SiloROM 510
+
+move r0 0
+SorterInitLoop:
+#s db Setting r0
+mul r1 r0 DataSize
+#s db Setting r1
+add SorterName r0 NAMEOFFSET
+s db Setting SorterName
+get SorterName SiloROM SorterName
+
+add IngotHash r0 HASHOFFSET
+get IngotHash SiloROM IngotHash
+
+lbn SorterID SORTERHASH SorterName ReferenceId Minimum
+# s db Setting SorterName
+s SorterID On 1
+
+sll SortCommand IngotHash 8
+or SortCommand SortCommand SorterInstruction.FilterPrefabHashEquals
+# s db Setting SorterID
+put SorterID 0 SortCommand
+
+beqz SorterID Exit
+add r0 r0 1
+blt r0 NumItems SorterInitLoop
+Exit:
+yield
+s db On 0 #Switch off</Instructions>
+</InstructionData>
