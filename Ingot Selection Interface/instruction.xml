@@ -11,7 +11,7 @@ alias ItemDial d1
 alias QuantityDial d2
 # alias RequestQtyDisplay d3
 # alias RemainingQtyDisplay d3
-alias SubmitButton d3
+alias SubmitLever d3
 alias LabelDisplay d4
 alias InterlockMemory d5
 # Setting will be hash, used by display
@@ -26,22 +26,30 @@ alias ItemDialSetting r15
 
 # SIZE, TYPE, DESTINATIONID
 define DESTINATIONID 0
+define VENDING HASH("StructureVendingMachineSmall")
+define SILO HASH("StructureSDBSilo")
 
 Start:
+s SubmitLever Lock 0
+s SubmitLever Open 0
 move ItemDialSetting -1
-get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, sorter hash, string label, reserved)
+# Stack entries per ingot: 6
+# ingot hash, silo hash, vending hash,
+# stack size, reserved, string label
+get IngotIndexSkip IngotSiloDb 510
 get r0 IngotSiloDb 511 # Get total number of ingots to check
 s ItemDial Mode r0 # Set max dial value
 s LabelDisplay Color Color.White
 s LabelDisplay Mode DisplayMode.String
 
 MainLoop:
+yield
 l r0 ItemDial Setting
 bneal r0 ItemDialSetting ChangeItem # not the same as the dial
 
 l QuantityDialSetting QuantityDial Setting
 
-l r0 SubmitButton Activate
+l r0 SubmitLever Open
 bnezal r0 RequestItem # != 0
 
 j MainLoop
@@ -50,17 +58,19 @@ ChangeItem:
 move ItemDialSetting r0
 snez r2 r0
 s LabelDisplay On r0
+#s ConsoleDisplay On r0
+s db Setting 0
 beqz r2 ra #if zero, back the way we came
 sub IngotIndex ItemDialSetting 1 # convert to 0 based index
 mul IngotStackIndex IngotIndex IngotIndexSkip
 get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get silo hash
-lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
+lbn r1 SILO r0 Quantity Sum
 
 add IngotStackIndex IngotStackIndex 1
 get r0 IngotSiloDb IngotStackIndex # Get vending hash
-lbn r2 HASH("StructureVendingMachineSmall") r0 Quantity Sum
+lbn r2 VENDING r0 Quantity Sum
 add r3 r1 r2
 add r3 r3 2 # account for ingots in chutes
 #Limit quantity dial max to available in silo
@@ -69,14 +79,15 @@ add r3 r3 2 # account for ingots in chutes
 s QuantityDial Mode r3
 
 #s QuantityDial Setting 1
-add IngotStackIndex IngotStackIndex 3
+add IngotStackIndex IngotStackIndex 4
 get r0 IngotSiloDb IngotStackIndex # Get string label
 s LabelDisplay Setting r0
+s db Setting SelectedIngotHash
 j ra # Jump back to main loop
 
 
 RequestItem:
-s SubmitButton Lock 1
+s SubmitLever Lock 1
 max QuantityDialSetting QuantityDialSetting 1
 
 move RequestCode QuantityDialSetting
@@ -102,6 +113,8 @@ select r0 r0 Color.Green Color.Red
 s LabelDisplay Color r0
 sleep 1
 s LabelDisplay Color Color.White
-s SubmitButton Lock 0
-j ra</Instructions>
+s SubmitLever Lock 0
+s SubmitLever Open 0
+j ra
+</Instructions>
 </InstructionData>
