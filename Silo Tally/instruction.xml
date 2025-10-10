@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstructionData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DateTime>134040767536297741</DateTime>
+  <GameVersion>0.2.5935.26098</GameVersion>
+  <Title>Silo Tally</Title>
+  <Description>Tally silo and vending contents for one source of truth.​</Description>
+  <Author>MrDrummer25</Author>
+  <WorkshopFileHandle>0</WorkshopFileHandle>
+  <Instructions>alias IngotSiloDb d0
+
+alias IngotDbStackIndex r13
+alias IngotIndex r14
+alias IngotIndexSkip r15
+
+define CHUTECOUNT 2
+define VENDING HASH("StructureVendingMachineSmall")
+define SILO HASH("StructureSDBSilo")
+
+Start:
+get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, ve
+
+move IngotIndex 0
+MainLoop:
+yield
+s db Setting IngotIndex
+mul IngotDbStackIndex IngotIndex IngotIndexSkip
+get ItemHash IngotSiloDb IngotDbStackIndex # Get item hash
+
+add IngotDbStackIndex IngotDbStackIndex 1
+get r0 IngotSiloDb IngotDbStackIndex # Get silo hash
+lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
+
+add IngotDbStackIndex IngotDbStackIndex 1
+get r0 IngotSiloDb IngotDbStackIndex # Get vending hash
+lbn r2 HASH("StructureVendingMachineSmall") r0 Quantity Sum
+
+add r3 r1 r2
+add r3 r3 CHUTECOUNT # account for ingots in chutes
+
+put db IngotIndex ItemHash # Store item hash
+add r0 IngotIndex 1
+put db r0 r3 # Store total count
+
+add IngotIndex IngotIndex 1
+j MainLoop
+
+# For each ingot type
+# get internal count of silo
+# get internal count of vending machine
+# add together
+# set display to total</Instructions>
+</InstructionData>
