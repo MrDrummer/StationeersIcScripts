@@ -23,7 +23,10 @@ define VENDING HASH("StructureVendingMachineSmall")
 define SORTER HASH("StructureLogicSorter")
 
 Start:
-get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, sorter hash, string label, reserved)
+# Stack entries per ingot: 6
+# ingot hash, silo hash, vending hash,
+# stack size, reserved, string label
+get IngotIndexSkip IngotSiloDb 510
 MainLoop:
 yield
 # SIZE, TYPE, DESTINATIONID
