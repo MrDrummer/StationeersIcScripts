@@ -1,0 +1,9 @@
+clr db
+
+push HASH("Manual Sorter")
+push HASH("Furnace Sorter")
+push HASH("Manufacturing Sorter")
+push HASH("Reserved Sorter")
+
+put db 511 sp # Length of stack
+s db On 0

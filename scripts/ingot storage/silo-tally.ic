@@ -1,0 +1,106 @@
+# Silo tally and display updatera
+alias IngotSiloDb d0
+
+alias CountDisplay r11
+alias ItemHash r12
+alias IngotDbStackIndex r13
+alias IngotIndex r14
+alias IngotIndexSkip r15
+
+define CHUTECOUNT 2
+define VENDING HASH("StructureVendingMachineSmall")
+define SILO HASH("StructureSDBSilo")
+define DISPLAY HASH("StructureConsoleLED1x3")
+
+Start:
+# Stack entries per ingot: 6
+# ingot hash, silo hash, vending hash,
+# stack size, reserved, string label
+get IngotIndexSkip IngotSiloDb 510
+
+TODO: Move display setup to separate chip
+# After one cycle, the stack values will be totally incorrect!!
+
+clr db
+move sp 0
+push HASH("IronIngot Display")
+push 0
+push HASH("CopperIngot Display")
+push 0
+push HASH("GoldIngot Display")
+push 0
+push HASH("SiliconIngot Display")
+push 0
+push HASH("SilverIngot Display")
+push 0
+push HASH("LeadIngot Display")
+push 0
+push HASH("NickelIngot Display")
+push 0
+push HASH("SteelIngot Display")
+push 0
+push HASH("SolderIngot Display")
+push 0
+push HASH("InvarIngot Display")
+push 0
+push HASH("ElectrumIngot Display")
+push 0
+push HASH("ConstantanIngot Display")
+push 0
+push HASH("WaspaloyIngot Display")
+push 0
+push HASH("InconelIngot Display")
+push 0
+push HASH("StelliteIngot Display")
+push 0
+push HASH("HastelloyIngot Display")
+push 0
+push HASH("AstroloyIngot Display")
+push 0
+push HASH("Cobalt Display")
+push 0
+push HASH("Coal Display")
+push 0
+push HASH("Uranium Display")
+push 0
+
+move sp 0
+move IngotIndex 0
+MainLoop:
+yield
+mul IngotDbStackIndex IngotIndex IngotIndexSkip
+get ItemHash IngotSiloDb IngotDbStackIndex # Get item hash
+beqzal ItemHash ResetCount # reset index to 0 if value is 0 (end of loop)
+s db Setting IngotIndex
+
+add IngotDbStackIndex IngotDbStackIndex 1
+get r0 IngotSiloDb IngotDbStackIndex # Get silo hash
+lbn r1 HASH("StructureSDBSilo") r0 Quantity Sum
+min r4 CHUTECOUNT r1
+
+add IngotDbStackIndex IngotDbStackIndex 1
+get r0 IngotSiloDb IngotDbStackIndex # Get vending hash
+lbn r2 HASH("StructureVendingMachineSmall") r0 Quantity Sum
+
+add IngotDbStackIndex IngotDbStackIndex 1
+get r0 IngotSiloDb IngotDbStackIndex # Get stack size
+
+add r3 r1 r2 # Add silo + vending
+add r5 r3 r4 # Add chutes only if silo > 0
+mul r4 r5 r0 # Items instead of stacks
+
+mul r0 IngotIndex 2
+get CountDisplay db r0 # Get current display ref
+sbn DISPLAY CountDisplay On 1
+sbn DISPLAY CountDisplay Setting r4
+
+put db r0 ItemHash # Store item hash
+add r0 r0 1
+put db r0 r3 # Store total count
+
+add IngotIndex IngotIndex 1
+j MainLoop
+
+ResetCount:
+move IngotIndex 0
+j ra

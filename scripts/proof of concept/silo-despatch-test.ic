@@ -1,0 +1,13 @@
+alias SiloId r14
+alias SILO r15
+
+move SILO HASH("StructureSDBSilo")
+
+move SiloId HASH("IronIngot Silo")
+
+# lbn SiloId SILO  ReferenceId Minimum
+
+sbn SILO SiloId Open 1 # Request items
+s db Setting SiloId
+sleep 1
+sbn SILO SiloId Open 0 # Stop request

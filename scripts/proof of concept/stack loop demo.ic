@@ -1,0 +1,18 @@
+alias ThisIngot r14
+alias TopOfStack r15
+
+alias Printer db
+
+push HASH("Iron")
+push HASH("Electrum")
+move TopOfStack sp
+
+start:
+  move sp TopOfStack
+  yield
+loop:
+  pop ThisIngot
+  lr r0 Printer Contents ThisIngot
+  #do the things..
+  bgtz sp loop
+j start

@@ -1,0 +1,35 @@
+# Ingot DB Chip
+# Stores prefab hashes for all ingots in the stack.
+# Persistent, no updating logic needed.
+
+main:
+# Reset SP
+move sp 0
+
+# --- Alloys ---
+push 412924554     # Astroloy
+push 1579842814    # Hastelloy
+push -787796599    # Inconel
+push -1897868623   # Stellite
+push 156348098     # Waspaloy
+
+# --- Mixed ---
+push 1058547521    # Constantan
+push 502280180     # Electrum
+push -297990285    # Invar
+push -82508479     # Solder
+push -654790771    # Steel
+
+# --- Base Metals ---
+push -404336834    # Copper
+push 226410516     # Gold
+push -1301215609   # Iron
+push 2134647745    # Lead
+push -1406385572   # Nickel
+push -290196476    # Silicon
+push -929742000    # Silver
+
+# Idle forever
+loop:
+yield
+j loop

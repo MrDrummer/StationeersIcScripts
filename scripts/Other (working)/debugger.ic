@@ -1,0 +1,11 @@
+alias Chip d0
+alias Dial d1
+alias DialSetting r15
+
+Start:
+yield
+s Dial Mode 511
+l DialSetting Dial Setting
+get r0 Chip DialSetting
+s db Setting r0
+j Start

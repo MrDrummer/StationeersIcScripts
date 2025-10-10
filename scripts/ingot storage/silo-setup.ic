@@ -1,0 +1,34 @@
+alias IngotSiloDb d0
+
+alias IngotIndexSkip r11
+alias ItemHash r12
+alias StackIndex r13
+alias SiloIndex r14
+alias SiloCount r15
+
+define VENDING HASH("StructureVendingMachineSmall")
+define SILO HASH("StructureSDBSilo")
+
+Start:
+move SiloIndex 0
+get IngotIndexSkip IngotSiloDb 510 # Stack indexes per ingot (2: ingot hash, silo hash, vending hash, string label, reserved, reserved)
+get SiloCount IngotSiloDb 511 # Get total number of ingots to check
+
+SiloLoop:
+bge SiloIndex SiloCount End
+
+mul StackIndex SiloIndex IngotIndexSkip
+get ItemHash IngotSiloDb StackIndex
+add StackIndex StackIndex 1 # Vending hash
+get r0 IngotSiloDb StackIndex # Get silo hash
+sbn SILO r0 Open 1
+add StackIndex StackIndex 1 # Vending hash
+get r0 IngotSiloDb StackIndex # Get vending hash
+sbn VENDING r0 On 1
+# sbn r0 VENDING RequestHash ItemHash
+
+
+add SiloIndex SiloIndex 1
+j SiloLoop
+End:
+s db On 0

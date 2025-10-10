@@ -1,0 +1,123 @@
+#Suit Visor Safety, Homing, and Storm Alert Duke E.2025 09 09
+alias Suit db
+alias Helmet d0
+alias Backpack d1
+define MaxSafePressure 125
+define DefaultPressure 90
+define MinSafePressure 60
+define MaxSafeTemp 323 #Kelvin =50c
+define MinSafeTemp 273 #Kelvin =0c
+define MaxO2Ratio 0.9 #Filter data
+define MinO2Ratio 0.6
+define MaxPoisonRatio 0.005 #Flush data = 0.5%
+define SecsPerWarnTime 300 #one Minute
+define NumWarnings 1
+define SoundIndexBase 29
+define NumFlashesx2 0
+define HeadingTempSetting 293 #19c
+define RoomTemperature 294
+define PressureTempSetting 297 #23c
+alias WarnCount r15
+alias FlashCount r14
+alias LightWasOn r13
+alias UserPressureSetting r12
+Start:
+move WarnCount NumWarnings
+move FlashCount 0
+put db 4 Sound.Alert
+put db 3 Sound.Alert
+put db 2 Sound.Warning
+put db 1 Sound.Warning
+put db 0 Sound.Danger
+
+s Suit TemperatureSetting RoomTemperature #20
+move UserPressureSetting DefaultPressure
+s Suit SoundAlert Sound.Welcome
+sleep 3
+Loop:
+yield
+l r0 Helmet Lock # Check if helmet is locked
+bnezal r0 AutoVisor #if locked, do auto open/close
+jal SuitSettings #turn on/off suit according to visor and O2 level, flush if needed
+jal StormAlarm #this sets FlashCount
+bgtzal FlashCount FlashLight
+jal CheckShowHeading #is it the Show heading temp or lower ?
+j Loop
+#==================
+AutoVisor:
+l r0 Suit PressureExternal
+min r1 r0 MaxSafePressure
+max r1 r0 MinSafePressure
+seq r1 r1 r0 #if these are not equal we had to clamp the value
+l r0 Suit TemperatureExternal
+min r2 r0 MaxSafeTemp
+max r2 r0 MinSafeTemp
+seq r2 r2 r0
+and r0 r1 r2
+s Helmet Open r0 # Set helmet open if both are safe
+j ra
+SuitSettings:
+l r0 Helmet Open #could get here with or without automation so we have to check
+seqz r1 r0 #r1 is the inverse of r0 meaning r1=HelmetClosed
+s Suit On r1
+s Suit AirRelease r1
+l r0 Suit RatioOxygen
+l r2 Suit Filtration #is filtration already On ?
+select r2 r2 MaxO2Ratio MinO2Ratio #if so, desired is MaxO2 else Min02
+slt r2 r0 r2 #if less than desired then filter required
+and r2 r2 r1 #AND the helmet is closed.
+s Suit Filtration r2
+l r0 Suit RatioPollutant
+l r1 Suit RatioNitrousOxide
+l r2 Suit RatioVolatiles
+max r0 r0 r1
+max r0 r0 r2 #get the largest one of the three
+sgt r0 r0 MaxPoisonRatio #too much poison ?
+s Helmet Flush r0
+j ra
+
+StormAlarm:
+l r0 Suit Setting #Suit setting comes in from the radio tower
+div r0 r0 1000 #get digits 999000
+trunc r0 r0  #chop off any fractions
+mod r0 r0 1000 #chop 3 digits.
+blez r0 NotIncoming #zero or negative means no warning right now
+div r0 r0 SecsPerWarnTime #Change Seconds to minutes
+trunc r0 r0  #chop off any fractiono
+min r0 r0 NumWarnings #Don't go off the end of the lookup
+bge r0 WarnCount ra #not time to squeak yet
+move WarnCount r0
+get r0 db WarnCount #read from stack
+s Suit SoundAlert r0 #see stack setup for sounds
+sleep 2
+s Suit SoundAlert Sound.StormIncoming
+sleep 2
+add r0 WarnCount SoundIndexBase
+s Suit SoundAlert 5
+l LightWasOn Helmet On
+move FlashCount NumFlashesx2
+j ra
+NotIncoming:
+move WarnCount NumWarnings
+j ra
+FlashLight:
+l r0 Helmet On
+seqz r0 r0 #invert
+sub FlashCount FlashCount 1
+select r0 FlashCount r0 LightWasOn #if it's the last one then set to what it was before.
+s Helmet On r0
+j ra
+CheckShowHeading:
+l r0 Suit TemperatureSetting
+l r1 Suit Setting
+mod r1 r1 1000 #get digits 000999
+sgt r2 r0 HeadingTempSetting #is it warm
+l r3 Suit PressureSetting
+sne r4 r3 UserPressureSetting #set on heading value
+or r2 r2 r4 #too warm or set on wrong setting
+select r4 r2 UserPressureSetting r1 #choose use pressure if so
+beq r4 r3 ra #if already det we're done
+s Suit AirRelease r2
+s Suit Filtration r2
+s Suit PressureSetting r4
+j ra

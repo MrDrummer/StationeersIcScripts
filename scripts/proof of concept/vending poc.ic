@@ -1,0 +1,13 @@
+define Vending -443130773
+define LogicMemory -851746783
+
+start:
+yield
+
+lbns r0 Vending HASH("Vending Machine 2") 2 Quantity Sum
+lbns r1 Vending HASH("Vending Machine 2") 2 OccupantHash Sum
+
+s db Setting r0
+sbn LogicMemory HASH("OccupantMemory") Setting r1
+
+j start

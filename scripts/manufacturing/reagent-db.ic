@@ -1,0 +1,35 @@
+# Material DB Chip
+# Stores prefab hashes for all materials (metals) in the stack.
+# Persistent, no updating logic needed.
+
+main:
+# Reset SP
+move sp 0
+
+# --- Base Metals ---
+push HASH("Copper")
+push HASH("Gold")
+push HASH("Iron")
+push HASH("Lead")
+push HASH("Nickel")
+push HASH("Silicon")
+push HASH("Silver")
+
+# --- Alloys ---
+push HASH("Constantan")
+push HASH("Electrum")
+push HASH("Invar")
+push HASH("Solder")
+push HASH("Steel")
+
+# --- Superalloys ---
+push HASH("Astroloy")
+push HASH("Hastelloy")
+push HASH("Inconel")
+push HASH("Stellite")
+push HASH("Waspaloy")
+
+# Idle forever
+loop:
+yield
+j loop

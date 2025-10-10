@@ -1,0 +1,110 @@
+alias IngotSiloDb d0
+alias ItemDial d1
+alias QuantityDial d2
+# alias RequestQtyDisplay d3
+# alias RemainingQtyDisplay d3
+alias SubmitLever d3
+alias LabelDisplay d4
+alias InterlockMemory d5
+# Setting will be hash, used by display
+
+alias IngotIndexSkip r9
+alias RequestCode r10
+alias IngotStackIndex r11
+alias IngotIndex r12
+alias QuantityDialSetting r13
+alias SelectedIngotHash r14
+alias ItemDialSetting r15
+
+# SIZE, TYPE, DESTINATIONID
+define DESTINATIONID 0
+define VENDING HASH("StructureVendingMachineSmall")
+define SILO HASH("StructureSDBSilo")
+
+Start:
+s SubmitLever Lock 0
+s SubmitLever Open 0
+move ItemDialSetting -1
+# Stack entries per ingot: 6
+# ingot hash, silo hash, vending hash,
+# stack size, reserved, string label
+get IngotIndexSkip IngotSiloDb 510
+get r0 IngotSiloDb 511 # Get total number of ingots to check
+s ItemDial Mode r0 # Set max dial value
+s LabelDisplay Color Color.White
+s LabelDisplay Mode DisplayMode.String
+
+MainLoop:
+yield
+l r0 ItemDial Setting
+bneal r0 ItemDialSetting ChangeItem # not the same as the dial
+
+l QuantityDialSetting QuantityDial Setting
+
+l r0 SubmitLever Open
+bnezal r0 RequestItem # != 0
+
+j MainLoop
+
+ChangeItem:
+move ItemDialSetting r0
+snez r2 r0
+s LabelDisplay On r0
+#s ConsoleDisplay On r0
+s db Setting 0
+beqz r2 ra #if zero, back the way we came
+sub IngotIndex ItemDialSetting 1 # convert to 0 based index
+mul IngotStackIndex IngotIndex IngotIndexSkip
+get SelectedIngotHash IngotSiloDb IngotStackIndex # Get prefab hash
+add IngotStackIndex IngotStackIndex 1
+get r0 IngotSiloDb IngotStackIndex # Get silo hash
+lbn r1 SILO r0 Quantity Sum
+
+add IngotStackIndex IngotStackIndex 1
+get r0 IngotSiloDb IngotStackIndex # Get vending hash
+lbn r2 VENDING r0 Quantity Sum
+add r3 r1 r2
+add r3 r3 2 # account for ingots in chutes
+#Limit quantity dial max to available in silo
+
+# TODO: Fix bug where we set max to 1 by default when the silo may be empty.
+s QuantityDial Mode r3
+
+#s QuantityDial Setting 1
+add IngotStackIndex IngotStackIndex 3
+get r0 IngotSiloDb IngotStackIndex # Get string label
+s LabelDisplay Setting r0
+s db Setting SelectedIngotHash
+j ra # Jump back to main loop
+
+
+RequestItem:
+s SubmitLever Lock 1
+max QuantityDialSetting QuantityDialSetting 1
+
+move RequestCode QuantityDialSetting
+mul RequestCode RequestCode 100 # Max 100 items per request
+add RequestCode RequestCode IngotIndex
+mul RequestCode RequestCode 100 # Shift left 2 decimal places
+add RequestCode RequestCode DESTINATIONID # Add destination ID (0 for printer)
+
+s LabelDisplay Color Color.Gray # Indicate Waiting
+InterlockWaitLoop:
+yield
+l r0 InterlockMemory Setting
+bnez r0 InterlockWaitLoop # Wait for interlock to clear
+
+s InterlockMemory Setting RequestCode # Write request code to interlock memory
+s LabelDisplay Color Color.Orange # Indicate request sent
+RequestFullfillWait:
+yield
+l r0 InterlockMemory Setting
+beq r0 RequestCode RequestFullfillWait
+sgez r0 r0
+select r0 r0 Color.Green Color.Red
+s LabelDisplay Color r0
+sleep 1
+s LabelDisplay Color Color.White
+s SubmitLever Lock 0
+s SubmitLever Open 0
+j ra

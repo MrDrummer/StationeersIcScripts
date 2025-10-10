@@ -1,0 +1,122 @@
+alias RotSorter d0
+alias CharcoalFurnace d1
+alias CharcoalVent d2
+alias IndexDisplay d3
+alias QuantityDisplay d4
+define CENT HASH("StructureCentrifuge")
+define VEND HASH("StructureRefrigeratedVendingMachine")
+define ROT HASH("DecayedFood")
+define VendorTooFull 95
+define CentrifugeFull 300
+
+alias NumDevices r15
+alias DeviceSplit r14
+alias DeviceIndex r13
+alias DeviceName r12
+
+Start:
+clr db
+move sp 0
+push HASH("CharcoalCentrifuge1")
+push HASH("CharcoalCentrifuge2")
+push HASH("CharcoalCentrifuge3")
+push HASH("CharcoalCentrifuge4")
+push HASH("CharcoalCentrifuge5")
+push HASH("CharcoalCentrifuge6")
+push HASH("CharcoalCentrifuge7")
+push HASH("CharcoalCentrifuge8")
+push HASH("CharcoalCentrifuge9")
+push HASH("CharcoalCentrifuge10")
+push HASH("CharcoalCentrifuge11")
+push HASH("CharcoalCentrifuge12")
+move DeviceSplit sp
+push HASH("Vendor2")
+push HASH("Vendor4")
+push HASH("Vendor6")
+push HASH("Vendor8")
+push HASH("Vendor10")
+push HASH("Vendor12")
+push HASH("Vendor13")
+move NumDevices sp
+
+move r0 ROT
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put RotSorter 0 r0
+s RotSorter Mode 1
+
+s CharcoalVent Mode Vent.Inward
+s CharcoalVent PressureInternal 50000
+s CharcoalVent PressureExternal 0
+s CharcoalVent On 1
+
+s CharcoalFurnace On 1
+s IndexDisplay On 1
+s QuantityDisplay On 1
+
+Loop:
+add DeviceIndex DeviceIndex 1
+mod DeviceIndex DeviceIndex NumDevices
+yield
+get DeviceName db DeviceIndex
+
+s IndexDisplay Setting DeviceIndex
+bltal DeviceIndex DeviceSplit DoCentrifuge
+bgeal DeviceIndex DeviceSplit DoVendor
+beqzal DeviceIndex DispenseRot
+
+l r0 CharcoalFurnace Activate
+ls r1 CharcoalFurnace 0 Occupied
+or r0 r0 r1
+s CharcoalFurnace Activate r0
+j Loop
+
+DispenseRot:
+sb VEND RequestHash ROT
+j ra
+
+DoVendor:
+s db Setting VEND
+lbn r0 VEND DeviceName Quantity Minimum
+bnan r0 ra
+beqz r0 ra
+s QuantityDisplay Setting r0
+ble r0 VendorTooFull ra
+s QuantityDisplay Color Color.Red
+move r0 2
+SlotLoop:
+lbns r1 VEND DeviceName r0 PrefabHash Minimum
+add r0 r0 1
+beqz r1 SlotLoop
+sll r2 r1 8
+or r2 r2 SorterInstruction.FilterPrefabHashEquals
+put RotSorter 1 r2
+s RotSorter ClearMemory 1
+sbn VEND DeviceName RequestHash r1
+s db Setting r1
+WaitLoop:
+yield
+l r0 RotSorter ExportCount
+beqz r0 WaitLoop
+put RotSorter 1 0
+s QuantityDisplay Color Color.Green
+j ra
+
+DoCentrifuge:
+s db Setting HASH("ItemBiomass")
+lbn r0 CENT DeviceName Reagents Minimum
+bnan r0 ra
+s QuantityDisplay Setting r0
+sge r1 r0 CentrifugeFull
+sgtz r0 r0 #true if any left
+lbn r2 CENT DeviceName Open Minimum
+lbns r3 CENT DeviceName 0 Occupied Minimum
+
+or r4 r2 r1 #if already open or full
+and r4 r4 r0 #and there's some bits left
+sbn CENT DeviceName Open r4
+
+or r0 r0 r3 #if input slot or has reagents
+or r0 r0 r4 #or it's open
+sbn CENT DeviceName On r0
+j ra

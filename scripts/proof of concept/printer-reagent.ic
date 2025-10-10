@@ -1,0 +1,9 @@
+alias Printer d0
+alias Display d1
+alias IngotQty r0
+alias IngotHash r1
+
+lr IngotQty Printer Contents HASH("Iron")
+rmap IngotHash Printer HASH("Iron")
+s Display Setting IngotQty
+s db Setting IngotHash

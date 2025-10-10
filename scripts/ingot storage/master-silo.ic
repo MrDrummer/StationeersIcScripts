@@ -1,0 +1,72 @@
+alias IngotSiloDb d0
+alias SorterDb d1
+alias InterlockMemory d2
+
+alias IngotIndexSkip r8
+alias ItemHash r9
+alias VendingId r10
+alias SorterId r11
+alias SIZE r12
+alias TYPE r13
+alias DESTINATIONID r14
+alias RequestCode r15
+
+define VENDING HASH("StructureVendingMachineSmall")
+define SORTER HASH("StructureLogicSorter")
+
+Start:
+# Stack entries per ingot: 6
+# ingot hash, silo hash, vending hash,
+# stack size, reserved, string label
+get IngotIndexSkip IngotSiloDb 510
+MainLoop:
+yield
+# SIZE, TYPE, DESTINATIONID
+l RequestCode InterlockMemory Setting
+
+bnezal RequestCode ProcessRequest
+j MainLoop
+
+
+ProcessRequest:
+mod DESTINATIONID RequestCode 100
+div RequestCode RequestCode 100
+trunc RequestCode RequestCode
+mod TYPE RequestCode 100
+div RequestCode RequestCode 100
+trunc RequestCode RequestCode
+mod SIZE RequestCode 100
+
+# Set the sorter to filter specific item and qty
+get r0 SorterDb DESTINATIONID
+lbn SorterId SORTER r0 ReferenceId Minimum
+
+mul r0 TYPE IngotIndexSkip
+get ItemHash IngotSiloDb r0 # Get item hash
+add r0 r0 2
+get VendingId IngotSiloDb r0 # Get silo hash
+# lbn VendingId VENDING r0 ReferenceId Minimum
+
+s db Setting SIZE
+move r0 SIZE
+sll r0 r0 8
+or r0 r0 SorterInstruction.LimitNextExecutionByCount
+put SorterId 0 r0
+
+move r0 ItemHash
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put SorterId 1 r0
+
+# Dispatch items from silo
+sbn VENDING VendingId ClearMemory 1
+IngotEjectLoop:
+yield
+sbn VENDING VendingId RequestHash ItemHash
+sleep 2
+lbn r0 VENDING VendingId ExportCount Minimum
+blt r0 SIZE IngotEjectLoop
+
+# TODO: Wait for import count of sorter to match request count
+s InterlockMemory Setting 0
+j ra

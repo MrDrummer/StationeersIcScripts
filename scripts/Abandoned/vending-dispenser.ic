@@ -1,0 +1,7 @@
+Loop:
+s d0 Activate 1
+s db Setting 1
+sleep 2
+s db Setting 0
+sleep 2
+j Loop

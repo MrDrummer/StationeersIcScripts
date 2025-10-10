@@ -1,0 +1,52 @@
+alias ReagentDb d0
+alias Printer d1
+alias Stacker d2
+alias IndicatorLight d3
+
+alias OutOfIngot d10
+alias ReagentCount r11
+alias DialSetting r12
+alias ReagentExpectedQty r13
+alias ReagentActualQty r14
+alias ReagentDbIndex r15
+
+Start:
+  get ReagentCount ReagentDb 511 # Get total number of ingots to check
+  jal CheckContents
+
+MainLoop:
+  yield
+
+  l r0 Printer ImportCount #has some metal been put in the printer?
+  beqzal r0 CheckContents
+j MainLoop
+
+CheckContents:
+  clr db # clear stack
+  move sp 0 # stack pointer to 0
+  s Printer ClearMemory 1 # clear Printer internal memory (Import Count)
+  s db Setting 0 # clear config option
+  move ReagentDbIndex 0
+  move OutOfIngot 0
+
+ReagentLoop:
+bgt ReagentDbIndex ReagentCount ra
+  get r0 ReagentDb ReagentDbIndex
+  add ReagentDbIndex ReagentDbIndex 1
+  get ReagentExpectedQty ReagentDb ReagentDbIndex
+  add ReagentDbIndex ReagentDbIndex 1
+  lr ReagentActualQty Printer Contents r0
+  rmap r0 Printer r0
+  s IndicatorLight Color Color.Green # Full of item
+  # TODO: Write to logic sorter
+
+bge ReagentActualQty ReagentExpectedQty NextStep #if we have enough, skip to next one.
+  move OutOfIngot 1 # Set out of ingot flag
+  s IndicatorLight Color Color.Red # Indicate missing items
+  push r0
+  sub r0 ReagentExpectedQty ReagentActualQty
+  push r0
+
+NextStep:
+j ReagentLoop # Comment this out to only check first ingot type
+j MainLoop

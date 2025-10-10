@@ -1,0 +1,112 @@
+alias CentrifugeSorter d0
+alias SmeltableSorter d1
+alias SiloSorter d2
+alias IceSorter d3
+alias CentrifugeOutputSorter d4
+
+alias SORTER r13
+alias INDEX r14
+alias ITEM r15
+
+Start:
+# Sorters:
+# - Centrifuge Sorter (Dirty Ore, Space Ore)
+# - Smeltable Sorter (Ore minus Coal, Cobalt, Hydrocarbon, Uranium Ore)
+# - Silo Sorter (Ingots, Coal, Cobalt, Hydrocarbon, Uranium Ore)
+# - Ice Sorter
+# - Everything else (Rejection)
+l SORTER CentrifugeSorter ReferenceId
+jal Init
+move ITEM HASH("ItemDirtyOre")
+jal Equals
+move ITEM HASH("ItemSpaceOre")
+jal Equals
+move ITEM HASH("ItemReagentMix")
+jal Equals
+jal Reset
+
+
+l SORTER SmeltableSorter ReferenceId
+jal Init
+move ITEM HASH("ItemIronOre")
+jal Equals
+move ITEM HASH("ItemCopperOre")
+jal Equals
+move ITEM HASH("ItemGoldOre")
+jal Equals
+move ITEM HASH("ItemSiliconOre")
+jal Equals
+move ITEM HASH("ItemSilverOre")
+jal Equals
+move ITEM HASH("ItemLeadOre")
+jal Equals
+move ITEM HASH("ItemNickelOre")
+jal Equals
+jal Reset
+
+
+l SORTER SiloSorter ReferenceId
+jal Init
+move ITEM HASH("ItemIronIngot")
+jal Equals
+move ITEM HASH("ItemCopperIngot")
+jal Equals
+move ITEM HASH("ItemGoldIngot")
+jal Equals
+move ITEM HASH("ItemSiliconIngot")
+jal Equals
+move ITEM HASH("ItemSilverIngot")
+jal Equals
+move ITEM HASH("ItemLeadIngot")
+jal Equals
+move ITEM HASH("ItemNickelIngot")
+jal Equals
+move ITEM HASH("ItemCharcoal")
+jal Equals
+move ITEM HASH("ItemCoalOre")
+jal Equals
+move ITEM HASH("ItemUraniumOre")
+jal Equals
+move ITEM HASH("ItemCobaltOre")
+jal Equals
+jal Reset
+
+
+l SORTER IceSorter ReferenceId
+jal Init
+move ITEM HASH("ItemIce")
+jal Equals
+move ITEM HASH("ItemNitrice")
+jal Equals
+move ITEM HASH("ItemOxite")
+jal Equals
+move ITEM HASH("ItemVolatiles")
+jal Equals
+jal Reset
+
+
+l SORTER CentrifugeOutputSorter ReferenceId
+jal Init
+move ITEM HASH("ItemReagentMix")
+jal Equals
+jal Reset
+
+j End
+
+Equals:
+sll ITEM ITEM 8
+or ITEM ITEM SorterInstruction.FilterPrefabHashEquals
+put SORTER INDEX ITEM
+add INDEX INDEX 1
+j ra
+
+Init:
+s SORTER Mode 1
+j ra
+
+Reset:
+move INDEX 0
+j ra
+
+End:
+s db On 0

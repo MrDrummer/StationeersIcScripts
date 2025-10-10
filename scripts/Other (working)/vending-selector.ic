@@ -1,0 +1,106 @@
+# Vending slot index 2-101
+alias DialSetting r12
+alias QtyOnStack r13
+alias LoopIndex r14
+alias SlotIndex r15
+alias VendingMachine d0
+alias ItemDial d1
+alias DispenseButton d2
+alias DisplayQty d3
+
+define BusyMsg0 STR("+Busy+")
+define BusyMsg1 STR("*Busy*")
+define ReadyMsg STR("Ready")
+start:
+s DisplayQty On 1
+j UpdateContents
+
+MainLoop:
+yield
+
+l DialSetting ItemDial Setting # Get dial value
+snez r1 DialSetting
+s VendingMachine Lock r1 # Lock if dial is not 0
+bnezal DialSetting ShowItem
+beqzal DialSetting ClearItem
+
+# These auto increment infinitely until cleared
+l r0 VendingMachine ImportCount
+l r1 VendingMachine ExportCount
+add r0 r0 r1
+beqz r0 MainLoop
+
+# Content changed, update stack
+UpdateContents:
+s DisplayQty Mode DisplayMode.String
+s VendingMachine ClearMemory 1 # clear Vending Machine internal memory
+s VendingMachine Lock 0
+move SlotIndex 0
+s db Setting 0
+move sp 0
+clr db # clear stack
+SlotLoop:
+and r1 SlotIndex 1
+select r1 r1 BusyMsg1 BusyMsg0
+s DisplayQty Setting r1
+ls r0 VendingMachine SlotIndex PrefabHash
+ls r1 VendingMachine SlotIndex Quantity
+
+move QtyOnStack -1
+bnezal r0 GetQtyOnStack
+beqzal QtyOnStack AddToStack
+add SlotIndex SlotIndex 1
+ble SlotIndex 101 SlotLoop
+
+move r0 sp
+div r0 r0 2
+s ItemDial Mode r0 # Set max dial value
+s ItemDial Setting 0 # Set to dial to 0
+j MainLoop
+
+# r0 and r1 will be populated with the current slot's prefab hash and quantity
+GetQtyOnStack:
+move QtyOnStack 0
+move LoopIndex 0
+
+# Fall through to stack loop
+StackLoop:
+bge LoopIndex sp ra # Exit if at the end of the stack
+get r2 db LoopIndex
+add LoopIndex LoopIndex 1 # Increment from prefab to quantity index
+bne r0 r2 NotTheSame
+
+get QtyOnStack db LoopIndex # The current slot item already exists on the stack
+add QtyOnStack QtyOnStack r1 # Quantity
+put db LoopIndex QtyOnStack
+
+# Fall through to NotTheSame
+NotTheSame:
+add LoopIndex LoopIndex 1 # Increment to next prefab hash
+j StackLoop
+
+AddToStack:
+push r0 # Prefab Hash
+push r1 # Quantity
+j ra
+
+ShowItem:
+sub r0 DialSetting 1 # Convert to 0 based index
+mul r0 r0 2 # Stack pointer index (2 values per item)
+get r1 db r0
+s db Setting r1 # Set chip's setting to the selected item's prefab hash
+add r0 r0 1 # Move to quantity index
+get r2 db r0
+s DisplayQty Mode DisplayMode.Default # Set back to number display mode
+s DisplayQty Setting r2 # Set display quantity
+
+l r0 DispenseButton Activate #Dispense Item ?
+beqz r0 ra
+s VendingMachine RequestHash r1
+j ra
+
+ClearItem:
+s db Setting 0
+s DisplayQty Mode DisplayMode.String
+s DisplayQty Setting ReadyMsg
+j ra

@@ -1,0 +1,99 @@
+define CENT HASH("StructureCentrifuge")
+define CentrifugeFull 300
+
+alias ForceOpenLever d0
+alias NumDevices r15
+alias DeviceSplit r14
+alias DeviceIndex r13
+alias DeviceName r12
+alias ForceOpenSetting r11
+
+Start:
+clr db
+move DeviceIndex 0
+move sp 0
+push HASH("Centrifuge1")
+push HASH("Centrifuge2")
+push HASH("Centrifuge3")
+push HASH("Centrifuge4")
+push HASH("Centrifuge5")
+push HASH("Centrifuge6")
+push HASH("Centrifuge7")
+push HASH("Centrifuge8")
+push HASH("Centrifuge9")
+push HASH("Centrifuge10")
+push HASH("Centrifuge11")
+push HASH("Centrifuge12")
+push HASH("Centrifuge13")
+push HASH("Centrifuge14")
+push HASH("Centrifuge15")
+push HASH("Centrifuge16")
+push HASH("Centrifuge17")
+push HASH("Centrifuge18")
+push HASH("Centrifuge19")
+push HASH("Centrifuge20")
+push HASH("Centrifuge21")
+push HASH("Centrifuge22")
+push HASH("Centrifuge23")
+push HASH("Centrifuge24")
+push HASH("Centrifuge25")
+push HASH("Centrifuge26")
+push HASH("Centrifuge27")
+push HASH("Centrifuge28")
+push HASH("Centrifuge29")
+push HASH("Centrifuge30")
+push HASH("Centrifuge31")
+push HASH("Centrifuge32")
+push HASH("Centrifuge33")
+push HASH("Centrifuge34")
+push HASH("Centrifuge35")
+push HASH("Centrifuge36")
+push HASH("Centrifuge37")
+push HASH("Centrifuge38")
+push HASH("Centrifuge39")
+push HASH("Centrifuge40")
+push HASH("Centrifuge41")
+push HASH("Centrifuge42")
+push HASH("Centrifuge43")
+push HASH("Centrifuge44")
+push HASH("Centrifuge45")
+
+move DeviceSplit sp
+
+Loop:
+yield
+get DeviceName db DeviceIndex
+beqzal DeviceName ResetCount # reset index to 0 if value is 0 (end of loop)
+
+s db Setting DeviceIndex
+l ForceOpenSetting ForceOpenLever Setting
+bltal DeviceIndex DeviceSplit DoCentrifuge
+add DeviceIndex DeviceIndex 1
+j Loop
+
+DoCentrifuge:
+bnez ForceOpenSetting ForceOpen
+lbn r0 CENT DeviceName Reagents Minimum
+bnan r0 ra
+sge r1 r0 CentrifugeFull
+sgt r0 r0 20 #true if over a small amount left
+lbn r2 CENT DeviceName Open Minimum
+lbns r3 CENT DeviceName 0 Occupied Minimum
+
+or r4 r2 r1 #if already open or full
+and r4 r4 r0 #and there's some bits left
+sbn CENT DeviceName Open r4
+
+or r0 r0 r3 #if input slot or has reagents
+or r0 r0 r4 #or it's open
+sbn CENT DeviceName On r0
+j ra
+
+ForceOpen:
+sbn CENT DeviceName Open 1
+
+j ra
+
+ResetCount:
+move DeviceIndex 0
+j ra

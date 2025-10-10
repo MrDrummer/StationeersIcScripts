@@ -1,0 +1,22 @@
+alias Sorter d0
+s Sorter Mode 1 # Any
+
+move r0 3
+sll r0 r0 8 #Shift it up eight bits
+or r0 r0 SorterInstruction.LimitNextExecutionByCount
+put Sorter 0 r0
+
+move r0 HASH("ItemSteelIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put Sorter 1 r0
+
+move r0 3
+sll r0 r0 8 #Shift it up eight bits
+or r0 r0 SorterInstruction.LimitNextExecutionByCount
+put Sorter 2 r0
+
+move r0 HASH("ItemCopperIngot")
+sll r0 r0 8
+or r0 r0 SorterInstruction.FilterPrefabHashEquals
+put Sorter 3 r0
